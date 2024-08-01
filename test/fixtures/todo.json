@@ -1,0 +1,14 @@
+{
+ "todoName": "Test Todo",
+ "date": {
+  "_seconds": 1673532800,
+  "_nanoseconds": 0
+ },
+ "todoId": "123",
+ "type": "Private",
+ "uid": "uid_123",
+ "userName": "test_user",
+ "isImportant": false,
+ "isCompleted": false,
+ "folderName": "test_folder"
+}

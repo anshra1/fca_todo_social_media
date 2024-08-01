@@ -1,0 +1,23 @@
+import 'package:gap/gap.dart';
+
+const kGaps2 = Gap(2);
+const kGaps3 = Gap(3);
+const kGaps4 = Gap(4);
+const kGaps5 = Gap(5);
+const kGaps10 = Gap(10);
+const kGaps15 = Gap(15);
+const kGaps20 = Gap(20);
+const kGaps25 = Gap(25);
+const kGaps30 = Gap(30);
+const kGaps35 = Gap(35);
+const kGaps40 = Gap(40);
+const kGaps45 = Gap(45);
+const kGaps50 = Gap(50);
+const kGaps55 = Gap(55);
+const kGaps60 = Gap(70);
+const kGaps65 = Gap(75);
+const kGaps70 = Gap(80);
+const kGaps80 = Gap(85);
+const kGaps90 = Gap(90);
+const kGaps95 = Gap(95);
+const kGaps100 = Gap(100);

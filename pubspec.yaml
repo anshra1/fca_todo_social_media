@@ -1,0 +1,73 @@
+name: flutter_learning_go_router
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.2 <4.0.0'
+
+dependencies:
+  audioplayers: ^6.0.0
+  badges: ^3.1.2
+  bloc: ^8.1.4
+  cached_network_image: ^3.3.1
+  chewie: ^1.7.5
+  cloud_firestore: ^4.16.0
+  connectivity_plus: ^6.0.3
+  cupertino_icons: ^1.0.6
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  file_picker: ^8.0.0+1
+  firebase_auth: ^4.19.0
+  firebase_core: ^2.28.0
+  firebase_storage: ^11.7.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.5
+  flutter_chat_types: ^3.6.2
+  flutter_hooks: ^0.20.5
+  flutter_link_previewer: ^3.2.2
+  flutter_otp_text_field: ^1.1.3+2
+  font_awesome_flutter: ^10.7.0
+  gap: ^3.0.1
+  get_it: ^7.6.7
+  go_router: ^14.1.2
+  google_fonts: ^6.2.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  iconly: ^1.0.1
+  image_picker: ^1.0.8
+  internet_connection_checker_plus: ^2.4.2
+  intl: ^0.19.0
+  lottie: ^3.0.0
+  open_file: ^3.3.2
+  path_provider: ^2.1.3
+  provider: ^6.1.2
+  salomon_bottom_bar: ^3.3.2
+  shared_preferences: ^2.2.2
+  smooth_page_indicator: ^1.1.0
+  syncfusion_flutter_datepicker: ^26.1.42
+  url_launcher: ^6.2.6
+  uuid: ^4.4.0
+  video_player: ^2.8.6
+  video_thumbnail: ^0.5.3
+
+dev_dependencies:
+  bloc_test: ^9.1.7
+  build_runner: ^2.4.11
+  fake_cloud_firestore: ^2.5.1
+  firebase_auth_mocks: ^0.13.0
+  firebase_storage_mocks: ^0.6.1
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+  google_sign_in_mocks: ^0.3.0
+  hive_generator: ^2.0.1
+  mocktail: ^1.0.3
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
+  very_good_analysis: ^5.1.0
+
+flutter:
+  uses-material-design: true

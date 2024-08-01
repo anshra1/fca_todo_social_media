@@ -1,0 +1,35 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_learning_go_router/core/common/dialog/alert_dialog_model.dart';
+import 'package:flutter_learning_go_router/core/common/dialog/error_dialog.dart';
+import 'package:flutter_learning_go_router/core/common/loading/loading_screen.dart';
+import 'package:flutter_learning_go_router/core/common/widgets/i_field.dart';
+import 'package:flutter_learning_go_router/core/common/widgets/rich_link_text.dart';
+import 'package:flutter_learning_go_router/core/common/widgets/rounded_button.dart';
+import 'package:flutter_learning_go_router/core/common/widgets/title_text_field.dart';
+import 'package:flutter_learning_go_router/core/enum/gender.dart';
+import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
+import 'package:flutter_learning_go_router/core/extension/int_extension.dart';
+import 'package:flutter_learning_go_router/core/extension/text_style.dart';
+import 'package:flutter_learning_go_router/core/res/gap_ex.dart';
+import 'package:flutter_learning_go_router/core/strings/strings.dart';
+import 'package:flutter_learning_go_router/core/utils/core_utils.dart';
+import 'package:flutter_learning_go_router/core/utils/internet_connection_utils.dart';
+import 'package:flutter_learning_go_router/src/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_learning_go_router/src/auth/presentation/widgets/date_of_birth.dart';
+import 'package:flutter_learning_go_router/src/auth/presentation/widgets/gender_button.dart';
+import 'package:flutter_learning_go_router/src/auth/presentation/widgets/user_image.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/import.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/home_screen.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+
+part 'views/otp_verify_view.dart';
+part 'views/phone_number_view.dart';
+part 'views/register_the_user_view.dart';
