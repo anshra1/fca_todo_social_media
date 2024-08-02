@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
+import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
 import 'package:flutter_learning_go_router/core/extension/text_style.dart';
 import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
@@ -16,10 +18,14 @@ class AddFolderDialog extends HookWidget {
   Widget build(BuildContext context) {
     final controller = useTextEditingController();
     final text = useValueNotifier(controller.text.trim());
+    final focusNode = useFocusNode();
 
     useEffect(() {
       controller.addListener(() {
         text.value = controller.text.trim();
+      });
+      Future.delayed(const Duration(milliseconds: 100), () {
+        focusNode.requestFocus();
       });
       return null;
     });
@@ -33,6 +39,7 @@ class AddFolderDialog extends HookWidget {
         style: p20.copyWith(fontWeight: FontWeight.w500),
       ),
       content: TextField(
+        focusNode: focusNode,
         controller: controller,
         autofocus: true,
         decoration: const InputDecoration(
@@ -47,6 +54,7 @@ class AddFolderDialog extends HookWidget {
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
+            GlobalWidgetDialog.instance().hide();
           },
           child: Text(
             'CANCEL',
@@ -69,10 +77,7 @@ class AddFolderDialog extends HookWidget {
 
               if (context.mounted) {
                 Navigator.of(context).pop();
-              }
-
-              if (context.mounted) {
-                await context.pushNamed(
+                context.pushReplacementNamed(
                   FolderView.routeName,
                   extra: {
                     Strings.folderName: folder.folderName,
@@ -84,9 +89,9 @@ class AddFolderDialog extends HookWidget {
           },
           child: ValueListenableBuilder<String>(
             valueListenable: text,
-            builder: (context, text, _) {
+            builder: (context, value, _) {
               return Text(
-                text.isNotEmpty ? 'ADD' : '',
+                value.isNotEmpty ? 'ADD' : '',
                 style: p16.copyWith(
                   fontWeight: FontWeight.w500,
                   color: Colors.blue.shade800,

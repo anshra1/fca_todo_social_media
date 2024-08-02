@@ -18,7 +18,7 @@ class LastNaviagtions {
     };
 
     await HiveBox.commonBox.put(Strings.lastPage, Common(map)).then((_) {
-      context.pushNamed(
+      context.pushReplacementNamed(
         routeName,
         extra: {
           Strings.folderName: foldername,

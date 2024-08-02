@@ -13,7 +13,10 @@ import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.d
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/import.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/base_class.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/all_todos.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/home_screen.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/custom_list_tile.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/folder_tile.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/sorted_tile_title.dart';
@@ -47,105 +50,100 @@ class _FolderViewState extends State<FolderView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TodoCubit>.value(
-      value: sl<TodoCubit>(),
-      child: BaseClass(
-        title: widget.title,
-        folderName: widget.title,
-        isFolder: true,
-        settingNotifier: setting,
-        renameListFunction: () {},
-        deleteListFunction: () async {
-          final folder = HiveBox.folderBox.get(widget.folderid);
-          if (folder != null) {
-            await const DeleteDialog().present(context).then((onValue) {
-              if (onValue == null) return;
-              if (onValue == true) {
-                sl<TodoCubit>().deleteFolders(folder.folderId);
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  context.pop();
-                });
-              }
-            });
-          }
-        },
-        body: ValueListenableBuilder(
-          valueListenable: setting,
-          builder: (context, _, __) {
-            HiveBox.settingBox.put(
-              widget.title,
-              Setting(
-                sortCriteria: setting.value.sortCriteria,
-                colorName: setting.value.colorName,
-              ),
-            );
-
-            return ValueListenableBuilder(
-              valueListenable: HiveBox.taskBox.listenable(),
-              builder: (context, box, __) {
-                return HookBuilder(
-                  builder: (context) {
-                    final sortReverse = useState(false);
-                    var folderItemListTodos = <Todo>[];
-                    if (setting.value.sortCriteria == SortCriteria.none) {
+    return BaseClass(
+      title: widget.title,
+      folderName: widget.title,
+      isFolder: true,
+      settingNotifier: setting,
+      renameListFunction: () {},
+      deleteListFunction: () async {
+        final folder = HiveBox.folderBox.get(widget.folderid);
+        if (folder != null) {
+          await const DeleteDialog().present(context).then((onValue) {
+            if (onValue == null) return;
+            if (onValue == true) {
+              LastNaviagtions.navigateTo(context, AllTodosView.routeName);
+              sl<TodoCubit>().deleteFolders(folder.folderId);
+            }
+          });
+        }
+      },
+      body: ValueListenableBuilder(
+        valueListenable: setting,
+        builder: (context, _, __) {
+          HiveBox.settingBox.put(
+            widget.title,
+            Setting(
+              sortCriteria: setting.value.sortCriteria,
+              colorName: setting.value.colorName,
+            ),
+          );
+    
+          return ValueListenableBuilder(
+            valueListenable: HiveBox.taskBox.listenable(),
+            builder: (context, box, __) {
+              return HookBuilder(
+                builder: (context) {
+                  final sortReverse = useState(false);
+                  var folderItemListTodos = <Todo>[];
+                  if (setting.value.sortCriteria == SortCriteria.none) {
+                    folderItemListTodos = HiveBox.taskBox.values
+                        .where((todo) => todo.folderName == widget.title)
+                        .toList();
+                  } else {
+                    if (sortReverse.value) {
                       folderItemListTodos = HiveBox.taskBox.values
                           .where((todo) => todo.folderName == widget.title)
+                          .toList()
+                          .sortByCriteria(setting.value.sortCriteria)
+                          .reversed
                           .toList();
                     } else {
-                      if (sortReverse.value) {
-                        folderItemListTodos = HiveBox.taskBox.values
-                            .where((todo) => todo.folderName == widget.title)
-                            .toList()
-                            .sortByCriteria(setting.value.sortCriteria)
-                            .reversed
-                            .toList();
-                      } else {
-                        folderItemListTodos = HiveBox.taskBox.values
-                            .where((todo) => todo.folderName == widget.title)
-                            .toList()
-                            .sortByCriteria(setting.value.sortCriteria)
-                            .toList();
-                      }
+                      folderItemListTodos = HiveBox.taskBox.values
+                          .where((todo) => todo.folderName == widget.title)
+                          .toList()
+                          .sortByCriteria(setting.value.sortCriteria)
+                          .toList();
                     }
-
-                    final unDoneTodoList = useMemoized(() {
-                      return folderItemListTodos
-                          .where((todo) => !todo.isCompleted)
-                          .toList();
-                    }, [folderItemListTodos]);
-
-                    final doneTodoList = useMemoized(() {
-                      return folderItemListTodos
-                          .where((todo) => todo.isCompleted)
-                          .toList();
-                    }, [folderItemListTodos]);
-
-                    return Column(
-                      children: [
-                        if (setting.value.sortCriteria != SortCriteria.none)
-                          SortedTileTitle(
-                            title:
-                                'Sorted by ${setting.value.sortCriteria.name}',
-                            isCollapse: sortReverse.value,
-                            reverseSortCriteria: () =>
-                                sortReverse.value = !sortReverse.value,
-                            closeSorting: () => setting.value = setting.value
-                                .copyWith(sortCriteria: SortCriteria.none),
-                          ),
-                        Expanded(
-                          child: CustomScrollSingleFolderView(
-                            unDoneTodoList: unDoneTodoList,
-                            doneTodoList: doneTodoList,
-                          ),
+                  }
+    
+                  final unDoneTodoList = useMemoized(() {
+                    return folderItemListTodos
+                        .where((todo) => !todo.isCompleted)
+                        .toList();
+                  }, [folderItemListTodos]);
+    
+                  final doneTodoList = useMemoized(() {
+                    return folderItemListTodos
+                        .where((todo) => todo.isCompleted)
+                        .toList();
+                  }, [folderItemListTodos]);
+    
+                  return Column(
+                    children: [
+                      if (setting.value.sortCriteria != SortCriteria.none)
+                        SortedTileTitle(
+                          title:
+                              'Sorted by ${setting.value.sortCriteria.name}',
+                          isCollapse: sortReverse.value,
+                          reverseSortCriteria: () =>
+                              sortReverse.value = !sortReverse.value,
+                          closeSorting: () => setting.value = setting.value
+                              .copyWith(sortCriteria: SortCriteria.none),
                         ),
-                      ],
-                    );
-                  },
-                );
-              },
-            );
-          },
-        ),
+                      Expanded(
+                        child: CustomScrollSingleFolderView(
+                          unDoneTodoList: unDoneTodoList,
+                          doneTodoList: doneTodoList,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

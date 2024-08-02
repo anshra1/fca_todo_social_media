@@ -7,16 +7,10 @@ abstract class TodoState extends Equatable {
   List<Object?> get props => [];
 }
 
-class TodoInitial extends TodoState {
-  TodoInitial() {
-    print(' sat TodoInitial');
-  }
-}
+class TodoInitial extends TodoState {}
 
 class TodoLoading extends TodoState {
-  TodoLoading(this.state) {
-    print('sat loading $state');
-  }
+  const TodoLoading(this.state);
 
   final TodoState state;
 }

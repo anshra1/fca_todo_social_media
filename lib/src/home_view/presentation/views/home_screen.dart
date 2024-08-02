@@ -3,14 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/common/dialog/alert_dialog_model.dart';
-import 'package:flutter_learning_go_router/core/common/dialog/error_dialog.dart';
 import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/core/utils/core_utils.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/custom_hook/stream_custom_hook.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/utils/sync_manager.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/all_task_view.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/all_todos.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,8 +23,7 @@ class HomeClass extends StatefulHookWidget {
   State<HomeClass> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeClass>
-    with AutomaticKeepAliveClientMixin {
+class _HomeViewState extends State<HomeClass> {
   late SyncManager _syncManager;
 
   bool _initialLoadComplete = false;
@@ -50,10 +47,11 @@ class _HomeViewState extends State<HomeClass>
     final lastRoute = HiveBox.commonBox.get(Strings.lastPage)?.value
         as Map<dynamic, dynamic>?;
 
-    if (lastRoute != null) {
+    if (lastRoute != null &&
+        lastRoute[Strings.lastPage].toString() != HomeClass.routeName) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.pushNamed(
-          lastRoute[Strings.lastPage] as String? ?? HomeClass.routeName,
+        context.pushReplacementNamed(
+          lastRoute[Strings.lastPage] as String? ?? AllTodosView.routeName,
           extra: {
             Strings.folderName: lastRoute[Strings.folderName] as String?,
             Strings.folderId: lastRoute[Strings.folderId] as String?,
@@ -62,7 +60,7 @@ class _HomeViewState extends State<HomeClass>
       });
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.pushNamed(AllTodosView.routeName);
+        context.pushReplacementNamed(AllTodosView.routeName);
       });
     }
   }
@@ -75,7 +73,6 @@ class _HomeViewState extends State<HomeClass>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     'sate'.printFirst();
     useLocalUserModelStreamHook();
     final appLifecycleState = useAppLifecycleState();
@@ -91,24 +88,6 @@ class _HomeViewState extends State<HomeClass>
       _syncManager.dispose();
     }
 
-    return BlocConsumer<TodoCubit, TodoState>(
-      listener: (context, state) {
-        debugPrint('sat Home $state');
-        if (state is TodoError) {
-          ErrorDialog(message: state.message).present(context);
-          _syncManager.stopUploading();
-        } else if (state is SyncCompleted) {
-          _syncManager.stopUploading();
-          CoreUtils.showSnackBar(context, 'Sync Completed');
-        }
-        // Add more listener logic for other states as needed
-      },
-      builder: (context, state) {
-        return const Text('Home');
-      },
-    );
+    return AllTodosView();
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

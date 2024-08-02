@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
 import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/common.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
@@ -25,13 +27,14 @@ import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/sh
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class HomeViewDrawer extends StatelessWidget {
+class HomeViewDrawer extends HookWidget {
   const HomeViewDrawer({super.key});
 
   static const routeName = 'home-view-drawer';
 
   @override
   Widget build(BuildContext context) {
+    final controller = useValueNotifier(OverlayPortalController());
     final height = context.height * .89;
     return Drawer(
       backgroundColor: Colors.white,
@@ -63,20 +66,41 @@ class HomeViewDrawer extends StatelessWidget {
                   ),
                   NewListTile(
                     onPressed: () {
+                      // showModalBottomSheet<void>(
+                      //   context: context,
+                      //   isScrollControlled: true,
+                      //   isDismissible: false,
+                      //   backgroundColor: Colors.transparent,
+                      //   builder: (BuildContext context) {
+                      //     return BlocProvider.value(
+                      //       value: sl<TodoCubit>(),
+                      //       child: Padding(
+                      //         padding: EdgeInsets.only(
+                      //           bottom:
+                      //               MediaQuery.of(context).viewInsets.bottom +
+                      //                   20, // 20 is the gap
+                      //         ),
+                      //         child: SingleChildScrollView(
+                      //           child: Column(
+                      //             mainAxisSize: MainAxisSize.min,
+                      //             children: [
+                      //               Container(
+                      //                 width: context.width *
+                      //                     0.9, // Adjust width as needed
+                      //                 margin: const EdgeInsets.symmetric(
+                      //                     vertical: 10),
+                      //                 child: const AddFolderDialog(),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // );
                       context.pushNamed(FolderView.routeName);
-
-                      if (context.mounted) {
-                        showDialog<void>(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) {
-                            return BlocProvider.value(
-                              value: sl<TodoCubit>(),
-                              child: const AddFolderDialog(),
-                            );
-                          },
-                        );
-                      }
+                      GlobalWidgetDialog.instance().show(
+                          context: context, child: const AddFolderDialog());
                     },
                   ),
                   kGaps5,

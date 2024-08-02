@@ -210,17 +210,17 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> updateMakeImportant(String todoId) async {
-    print('sat $state');
+    print('sat important $state');
 
     emit(TodoLoading(state));
-    print('sat2 $state');
+    print('sat2 important $state');
     final result = await _updateMakeImportant(todoId);
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) {
-        print('sat3 $state');
+        print('sat3 important $state');
         emit(UpdateImportantCompletedState());
-        print('sat4 $state');
+        print('sat4 important $state');
       },
     );
   }

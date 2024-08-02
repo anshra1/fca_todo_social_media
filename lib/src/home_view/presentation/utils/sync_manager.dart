@@ -40,7 +40,7 @@ class SyncManager {
       });
     }
   }
-o
+
   void dispose() {
     stopUploading();
     context.read<TodoCubit>().stopListening();

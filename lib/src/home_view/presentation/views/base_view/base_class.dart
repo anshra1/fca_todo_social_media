@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_learning_go_router/core/common/dialog/alert_dialog_model.dart';
+import 'package:flutter_learning_go_router/core/common/dialog/error_dialog.dart';
 import 'package:flutter_learning_go_router/core/extension/string_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
+import 'package:flutter_learning_go_router/core/utils/core_utils.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/utils/sync_manager.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/screen_components/app_bar.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/screen_components/drawer.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/screen_components/floating_action_button.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/color_picker_bottom_sheet.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/sorting_bottom_sheet.dart';
-import 'package:go_router/go_router.dart';
 
-class BaseClass extends StatelessWidget {
+class BaseClass extends HookWidget {
   const BaseClass({
     required this.body,
     required this.title,
@@ -45,48 +50,66 @@ class BaseClass extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: settingNotifier,
-      builder: (context, setting, _) {
-        TodoManager.updateViewSelectedSetting(
-          title: title,
-          color: setting.colorName,
-          sortCriteria: setting.sortCriteria,
-        );
-        final color = setting.colorName.toColor();
-        return Scaffold(
-          backgroundColor: color,
-          floatingActionButton: isFloatingActionButton
-              ? HomeViewFloatingActionButton(
-                  iconColor: color,
-                  folderName: folderName,
-                  type: type,
-                )
-              : null,
-          appBar: HomeViewAppBar(
-            title: title,
-            appBarColor: color,
-            onSortSelected: () async => BaseClassFunction.onSortSelected(
-              context: context,
-              title: title,
-              showImportantSheetTile: showImportantSheetTile,
-              settingNotifier: settingNotifier,
-            ),
-            onThemeChanged: () => BaseClassFunction.onThemeChanged(
-              context: context,
-              settingNotifier: settingNotifier,
-            ),
-            onShowCompletedTasksChanged: onShowCompletedTasksChanged,
-            showCompletedTaskNotifier: showCompletedTaskNotifier,
-            isFolder: isFolder,
-            renameListFunction: renameListFunction,
-            deleteListFunction: deleteListFunction,
-            isSort: isSort,
-          ),
-          drawer: const HomeViewDrawer(),
-          body: body,
-        );
+    final syncManager = useValueNotifier(SyncManager(context));
+
+    useEffect(() {
+      return syncManager.value.stopUploading;
+    }, []);
+
+    return BlocListener<TodoCubit, TodoState>(
+      listener: (context, state) {
+        debugPrint('sat Home $state');
+        if (state is TodoError) {
+          ErrorDialog(message: state.message).present(context);
+          syncManager.value.stopUploading();
+        } else if (state is SyncCompleted) {
+          syncManager.value.stopUploading();
+          CoreUtils.showSnackBar(context, 'Sync Completed');
+        }
       },
+      child: ValueListenableBuilder(
+        valueListenable: settingNotifier,
+        builder: (context, setting, _) {
+          TodoManager.updateViewSelectedSetting(
+            title: title,
+            color: setting.colorName,
+            sortCriteria: setting.sortCriteria,
+          );
+          final color = setting.colorName.toColor();
+          return Scaffold(
+            backgroundColor: color,
+            floatingActionButton: isFloatingActionButton
+                ? HomeViewFloatingActionButton(
+                    iconColor: color,
+                    folderName: folderName,
+                    type: type,
+                  )
+                : null,
+            appBar: HomeViewAppBar(
+              title: title,
+              appBarColor: color,
+              onSortSelected: () async => BaseClassFunction.onSortSelected(
+                context: context,
+                title: title,
+                showImportantSheetTile: showImportantSheetTile,
+                settingNotifier: settingNotifier,
+              ),
+              onThemeChanged: () => BaseClassFunction.onThemeChanged(
+                context: context,
+                settingNotifier: settingNotifier,
+              ),
+              onShowCompletedTasksChanged: onShowCompletedTasksChanged,
+              showCompletedTaskNotifier: showCompletedTaskNotifier,
+              isFolder: isFolder,
+              renameListFunction: renameListFunction,
+              deleteListFunction: deleteListFunction,
+              isSort: isSort,
+            ),
+            drawer: const HomeViewDrawer(),
+            body: body,
+          );
+        },
+      ),
     );
   }
 }

@@ -5,9 +5,9 @@ import 'package:flutter_learning_go_router/core/common/loading/loading_screen_co
 import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
 
 class LoadingScreen {
-  factory LoadingScreen.instance() => _shared;
   LoadingScreen._sharedInstance();
   static final LoadingScreen _shared = LoadingScreen._sharedInstance();
+  factory LoadingScreen.instance() => _shared;
 
   LoadingScreenController? controller;
 
@@ -35,7 +35,7 @@ class LoadingScreen {
     required String text,
   }) {
     final textController = StreamController<String>();
-    // ignore: cascade_invocations
+
     textController.add(text);
 
     final state = Overlay.of(context);
