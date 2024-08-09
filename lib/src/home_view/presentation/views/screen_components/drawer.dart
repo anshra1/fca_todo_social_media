@@ -14,6 +14,7 @@ import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo
 import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/folder_view.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/new_folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/all_todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/completed_todo.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/public_todos.dart';
@@ -23,9 +24,11 @@ import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/dr
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_header.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_tile.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/new_list_tile.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/show_folder_dialog.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/rename_folder_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+final GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
 
 class HomeViewDrawer extends HookWidget {
   const HomeViewDrawer({super.key});
@@ -34,7 +37,6 @@ class HomeViewDrawer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = useValueNotifier(OverlayPortalController());
     final height = context.height * .89;
     return Drawer(
       backgroundColor: Colors.white,
@@ -66,8 +68,11 @@ class HomeViewDrawer extends HookWidget {
                   ),
                   NewListTile(
                     onPressed: () {
-                      // showModalBottomSheet<void>(
-                      //   context: context,
+                      context.pushNamed(AddFolderDialog.routeName);
+                      //context.pushNamed(FolderView.routeName);
+                      //  showModalBottomSheet<void>(
+                      //   context: AppRouter
+                      //       .mainMenuNavigatorKey.currentState!.context,
                       //   isScrollControlled: true,
                       //   isDismissible: false,
                       //   backgroundColor: Colors.transparent,
@@ -76,31 +81,30 @@ class HomeViewDrawer extends HookWidget {
                       //       value: sl<TodoCubit>(),
                       //       child: Padding(
                       //         padding: EdgeInsets.only(
-                      //           bottom:
-                      //               MediaQuery.of(context).viewInsets.bottom +
-                      //                   20, // 20 is the gap
-                      //         ),
+                      //             bottom:
+                      //                 MediaQuery.of(context).viewInsets.bottom +
+                      //                     20 // 20 is the gap
+                      //             ),
                       //         child: SingleChildScrollView(
-                      //           child: Column(
-                      //             mainAxisSize: MainAxisSize.min,
-                      //             children: [
-                      //               Container(
-                      //                 width: context.width *
-                      //                     0.9, // Adjust width as needed
-                      //                 margin: const EdgeInsets.symmetric(
-                      //                     vertical: 10),
-                      //                 child: const AddFolderDialog(),
-                      //               ),
-                      //             ],
+                      //           child: Center(
+                      //             child: Column(
+                      //               mainAxisSize: MainAxisSize.min,
+                      //               children: [
+                      //                 Container(
+                      //                   width: context.width *
+                      //                       0.9, // Adjust width as needed
+                      //                   margin: const EdgeInsets.symmetric(
+                      //                       vertical: 10),
+                      //                   child: const AddFolderDialog(),
+                      //                 ),
+                      //               ],
+                      //             ),
                       //           ),
                       //         ),
                       //       ),
                       //     );
                       //   },
                       // );
-                      context.pushNamed(FolderView.routeName);
-                      GlobalWidgetDialog.instance().show(
-                          context: context, child: const AddFolderDialog());
                     },
                   ),
                   kGaps5,
@@ -188,7 +192,7 @@ List<Widget> getDrawerTopListItems(BuildContext context) {
           foldername: Strings.tasks,
         );
       },
-      listLength: todoManager.folderTodoLength(Strings.tasks),
+      listLength: todoManager.folderTodoLength(Strings.tasksId),
     ),
     const Divider(color: Colors.grey, thickness: .3),
   ];

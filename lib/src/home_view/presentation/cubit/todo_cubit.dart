@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_learning_go_router/core/enum/todo_views.dart';
 import 'package:flutter_learning_go_router/core/error/exception.dart';
 import 'package:flutter_learning_go_router/core/error/failure.dart';
+import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/common.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
@@ -94,6 +95,7 @@ class TodoCubit extends Cubit<TodoState> {
   Future<void> addTask(Todo todo) async {
     emit(TodoLoading(state));
     final result = await _addTask(todo);
+    print('cubit $todo');
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) {
@@ -245,6 +247,7 @@ class TodoCubit extends Cubit<TodoState> {
     required String folderId,
     required String newFolderName,
   }) async {
+    'cubit start'.printFirst();
     emit(TodoLoading(state));
     final result = await _updateFolder(
       UpdateFolderParams(folderId: folderId, newFolderName: newFolderName),
@@ -255,6 +258,7 @@ class TodoCubit extends Cubit<TodoState> {
         emit(TodoActionCompleted());
       },
     );
+    'cubit end'.printFirst();
   }
 
   Future<void> getErrors() async {

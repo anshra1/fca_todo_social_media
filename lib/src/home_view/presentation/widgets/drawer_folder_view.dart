@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/strings.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/folder_view.dart';
@@ -39,7 +38,7 @@ class DrawerFolderView extends StatelessWidget {
                 ),
                 listLength: context
                     .read<TodoManager>()
-                    .folderTodoLength(folder.folderName),
+                    .folderTodoLength(folder.folderId),
               );
             },
           ),

@@ -14,9 +14,9 @@ class AllTodosView extends ShowAllFoldersShell {
           listOfTodoFunction: _getTodos,
         );
 
-  static List<Todo> _getTodosAsFolder(String folderName) {
+  static List<Todo> _getTodosAsFolder(String folderId) {
     return HiveBox.taskBox.values
-        .where((todo) => !todo.isCompleted && todo.folderName == folderName)
+        .where((todo) => !todo.isCompleted && todo.folderId == folderId)
         .toList();
   }
 

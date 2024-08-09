@@ -4,29 +4,42 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
 import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
 import 'package:flutter_learning_go_router/core/extension/text_style.dart';
+import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/strings.dart';
+import 'package:flutter_learning_go_router/src/home_view/data/model/folder_model.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/folder_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-class AddFolderDialog extends HookWidget {
-  const AddFolderDialog({super.key});
+class RenameFolderDialog extends HookWidget {
+  const RenameFolderDialog(this.folderId, {super.key});
+
+  final String folderId;
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController();
-    final text = useValueNotifier(controller.text.trim());
     final focusNode = useFocusNode();
+    final controller = useTextEditingController();
+    final folderNameNotifier = useValueNotifier<String>('');
+
+    final folderNotifierMemo = useMemoized(() {
+      return HiveBox.folderBox.get(folderId);
+    });
 
     useEffect(() {
+      if (folderNotifierMemo != null) {
+        controller.text = folderNotifierMemo.folderName;
+      }
+
       controller.addListener(() {
-        text.value = controller.text.trim();
+        folderNameNotifier.value = controller.text;
       });
-      Future.delayed(const Duration(milliseconds: 100), () {
-        focusNode.requestFocus();
-      });
+
+      focusNode.requestFocus();
+
       return null;
     });
 
@@ -35,7 +48,7 @@ class AddFolderDialog extends HookWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       title: Text(
-        'New List',
+        'Rename List',
         style: p20.copyWith(fontWeight: FontWeight.w500),
       ),
       content: TextField(
@@ -43,7 +56,6 @@ class AddFolderDialog extends HookWidget {
         controller: controller,
         autofocus: true,
         decoration: const InputDecoration(
-          hintText: 'Enter list name',
           hintStyle: TextStyle(
             color: Colors.grey,
             fontWeight: FontWeight.w500,
@@ -53,7 +65,7 @@ class AddFolderDialog extends HookWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            //context.pop();
             GlobalWidgetDialog.instance().hide();
           },
           child: Text(
@@ -65,38 +77,32 @@ class AddFolderDialog extends HookWidget {
           ),
         ),
         TextButton(
-          onPressed: () async {
-            final id = const Uuid().v1();
-            final folder = Folder.defaults(
-              folderId: id,
-              folderName: controller.text.trim(),
+          onPressed: () {
+            context.read<TodoCubit>().updateFolder(
+                folderId: folderId, newFolderName: controller.text.trim());
+
+            LastNaviagtions.navigateTo(
+              context,
+              FolderView.routeName,
+              foldername: controller.text.trim(),
+              folderId: folderNotifierMemo!.folderId,
             );
 
-            if (controller.text.isNotEmpty) {
-              await context.read<TodoCubit>().createFolder(folder);
-
-              if (context.mounted) {
-                Navigator.of(context).pop();
-                context.pushReplacementNamed(
-                  FolderView.routeName,
-                  extra: {
-                    Strings.folderName: folder.folderName,
-                    Strings.folderId: folder.folderId,
-                  },
-                );
-              }
-            }
+            GlobalWidgetDialog.instance().hide();
           },
           child: ValueListenableBuilder<String>(
-            valueListenable: text,
-            builder: (context, value, _) {
-              return Text(
-                value.isNotEmpty ? 'ADD' : '',
-                style: p16.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.blue.shade800,
-                ),
-              );
+            valueListenable: folderNameNotifier,
+            builder: (context, folderName, _) {
+              return folderName.isNotEmpty &&
+                      folderNotifierMemo!.folderName != controller.text.trim()
+                  ? Text(
+                      'Update',
+                      style: p16.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blue.shade800,
+                      ),
+                    )
+                  : const SizedBox.shrink();
             },
           ),
         ),

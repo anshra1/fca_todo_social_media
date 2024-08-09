@@ -14,7 +14,7 @@ class TodoModel extends Todo {
     required super.dueTime,
     super.isImportant,
     super.isCompleted,
-    super.folderName,
+    super.folderId,
     super.isDelete,
   });
 
@@ -28,7 +28,7 @@ class TodoModel extends Todo {
       userName: todo.userName,
       isImportant: todo.isImportant,
       isCompleted: todo.isCompleted,
-      folderName: todo.folderName,
+      folderId: todo.folderId,
       dueTime: todo.dueTime,
     );
   }
@@ -36,14 +36,15 @@ class TodoModel extends Todo {
   factory TodoModel.fromMap(Map<String, dynamic> map) {
     return TodoModel(
       todoName: map[Strings.todoName] as String? ?? '',
-      date: ((map[Strings.date] as Timestamp).toDate()) as DateTime? ?? DateTime.now(),
+      date: ((map[Strings.date] as Timestamp).toDate()) as DateTime? ??
+          DateTime.now(),
       todoId: map[Strings.todoId] as String? ?? '',
       type: map[Strings.type] as String? ?? '',
       uid: map[Strings.uid] as String? ?? '',
       userName: map[Strings.userName] as String? ?? '',
       isImportant: map[Strings.isImportant] as bool? ?? false,
       isCompleted: map[Strings.isCompleted] as bool? ?? false,
-      folderName: map[Strings.folderName] as String? ?? '',
+      folderId: map[Strings.folderId] as String? ?? '',
       dueTime: map[Strings.dueTime] as String? ?? '',
       isDelete: map[Strings.isDeleted] as bool? ?? false,
     );
@@ -57,7 +58,7 @@ class TodoModel extends Todo {
       type: TodoType.Private.value,
       uid: 'uid_123',
       userName: 'test_user',
-      folderName: 'test_folder',
+      folderId: 'test_folder',
       dueTime: '',
     );
   }
@@ -72,7 +73,7 @@ class TodoModel extends Todo {
       Strings.userName: userName,
       Strings.isImportant: isImportant,
       Strings.isCompleted: isCompleted,
-      Strings.folderName: folderName,
+      Strings.folderId: folderId,
       Strings.dueTime: dueTime,
       Strings.isDeleted: isDelete,
     };
@@ -87,7 +88,7 @@ class TodoModel extends Todo {
     String? userName,
     bool? isImportant,
     bool? isCompleted,
-    String? folderName,
+    String? folderId,
     bool? isDelete,
     String? dueTime,
   }) {
@@ -100,7 +101,7 @@ class TodoModel extends Todo {
       userName: userName ?? this.userName,
       isImportant: isImportant ?? this.isImportant,
       isCompleted: isCompleted ?? this.isCompleted,
-      folderName: folderName ?? this.folderName,
+      folderId: folderId ?? this.folderId,
       dueTime: dueTime ?? this.dueTime,
       isDelete: isDelete ?? this.isDelete,
     );
@@ -119,6 +120,6 @@ class TodoModel extends Todo {
         'isCompleted: $isCompleted, '
         'dueTime: $dueTime, '
         'isDeleted: $isDelete, '
-        'folderName: $folderName}';
+        'folderId: $folderId}';
   }
 }

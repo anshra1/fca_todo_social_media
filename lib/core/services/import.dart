@@ -44,6 +44,7 @@ import 'package:flutter_learning_go_router/src/home_view/domain/usecases/update_
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/import.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/folder_view.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/new_folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/all_todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/completed_todo.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/public_todos.dart';
@@ -52,7 +53,6 @@ import 'package:flutter_learning_go_router/src/home_view/presentation/views/impo
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/planned_view.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/screen_components/drawer.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/screen_components/floating_action_button.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/show_folder_dialog.dart';
 import 'package:flutter_learning_go_router/src/on_boarding/data/datasources/onboarding_local_data_src.dart';
 import 'package:flutter_learning_go_router/src/on_boarding/data/repo/onboarding_repo_impl.dart';
 import 'package:flutter_learning_go_router/src/on_boarding/domain/repo/on_boarding_repo.dart';

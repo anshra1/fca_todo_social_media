@@ -22,7 +22,7 @@ class BaseClass extends HookWidget {
     required this.title,
     required this.settingNotifier,
     this.isFloatingActionButton = true,
-    this.folderName,
+    this.folderId,
     this.type = false,
     this.showImportantSheetTile = true,
     this.isFolder = false,
@@ -37,7 +37,7 @@ class BaseClass extends HookWidget {
   final String title;
   final Widget body;
   final bool isFloatingActionButton;
-  final String? folderName;
+  final String? folderId;
   final bool type;
   final bool showImportantSheetTile;
   final bool isFolder;
@@ -53,7 +53,7 @@ class BaseClass extends HookWidget {
     final syncManager = useValueNotifier(SyncManager(context));
 
     useEffect(() {
-      return syncManager.value.stopUploading;
+    //  return syncManager.value.stopUploading;
     }, []);
 
     return BlocListener<TodoCubit, TodoState>(
@@ -80,10 +80,7 @@ class BaseClass extends HookWidget {
             backgroundColor: color,
             floatingActionButton: isFloatingActionButton
                 ? HomeViewFloatingActionButton(
-                    iconColor: color,
-                    folderName: folderName,
-                    type: type,
-                  )
+                    iconColor: color, folderId: folderId, type: type)
                 : null,
             appBar: HomeViewAppBar(
               title: title,

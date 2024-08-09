@@ -5,7 +5,7 @@ class AppRouter {
   static final GlobalKey<NavigatorState> _rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'root');
 
-  static final GlobalKey<NavigatorState> _mainMenuNavigatorKey =
+  static final GlobalKey<NavigatorState> mainMenuNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'main_menu');
 
   static final GoRouter router = GoRouter(
@@ -51,7 +51,7 @@ class AppRouter {
       ),
       // ... other routes
       ShellRoute(
-        navigatorKey: _mainMenuNavigatorKey,
+        navigatorKey: mainMenuNavigatorKey,
         observers: [routeObserver],
         builder: (context, state, child) {
           final user = sl<FirebaseAuth>().currentUser;

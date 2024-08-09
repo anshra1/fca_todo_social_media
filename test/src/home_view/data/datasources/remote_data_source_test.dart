@@ -23,7 +23,9 @@ import 'package:uuid/uuid.dart';
 
 class MockHive extends Mock implements HiveInterface {}
 
-class MockPathProvider with MockPlatformInterfaceMixin implements PathProviderPlatform {
+class MockPathProvider
+    with MockPlatformInterfaceMixin
+    implements PathProviderPlatform {
   @override
   Future<String?> getApplicationCachePath() async {
     return 'test/support/pathsq';
@@ -81,7 +83,7 @@ var todo = TodoModel(
   uid: 'uid_123',
   isCompleted: true,
   userName: 'test_user',
-  folderName: folder.folderName,
+  folderId: folder.folderName,
   dueTime: '',
 );
 
@@ -195,7 +197,8 @@ void main() {
       expect(firestoreLength, 5);
     },
   );
-  test('updateTodo should update the todo in the Hive box and firestroe', () async {
+  test('updateTodo should update the todo in the Hive box and firestroe',
+      () async {
     await HiveBox.taskBox.clear();
     await HiveBox.pendingTaskBox.clear();
 
@@ -482,7 +485,9 @@ void main() {
 
           await dataSource.startListening();
 
-          await userDocRefTodos.doc(todo.todoId).update({Strings.todoName: newTodoName});
+          await userDocRefTodos
+              .doc(todo.todoId)
+              .update({Strings.todoName: newTodoName});
 
           final doc = await userDocRefTodos.doc(todo.todoId).get();
 
@@ -492,10 +497,11 @@ void main() {
 
           final docTodo = TodoModel.fromMap(s);
 
-          final todoCopy = docTodo.copyWith(date: DateTime(2023, 10, 27, 10, 30));
+          final todoCopy =
+              docTodo.copyWith(date: DateTime(2023, 10, 27, 10, 30));
 
-          final todos =
-              (HiveBox.taskBox.get(docTodo.todoId) ?? TodoModel.empty()) as TodoModel;
+          final todos = (HiveBox.taskBox.get(docTodo.todoId) ??
+              TodoModel.empty()) as TodoModel;
 
           final c = todos.copyWith(date: DateTime(2023, 10, 27, 10, 30));
 
@@ -664,7 +670,8 @@ void main() {
         await HiveBox.taskBox.put(i.toString(), todo);
       }
 
-      final fTodo = todo.copyWith(folderName: 'folder').copyWith(isImportant: false);
+      final fTodo =
+          todo.copyWith(folderId: 'folder').copyWith(isImportant: false);
 
       await HiveBox.taskBox.put('folderId', fTodo);
 
@@ -675,7 +682,7 @@ void main() {
       expect(todoList.length, 5);
 
       final folderList = await dataSource.getTodos(
-        fTodo.folderName,
+        fTodo.folderId,
       );
 
       expect(folderList.length, 1);
@@ -727,13 +734,15 @@ void main() {
 
     for (var i = 0; i < 5; i++) {
       final id = const Uuid().v4();
-      final t = todo.copyWith(folderName: folder.folderName).copyWith(todoId: id);
+      final t =
+          todo.copyWith(folderId: folder.folderName).copyWith(todoId: id);
       await HiveBox.taskBox.put(t.todoId, t);
     }
 
     expect(HiveBox.taskBox.length, 5);
 
-    await HiveBox.taskBox.put('key', todo.copyWith(folderName: 'NoDeleteFolder'));
+    await HiveBox.taskBox
+        .put('key', todo.copyWith(folderId: 'NoDeleteFolder'));
 
     await firestore
         .collection(FirebaseStrings.users)
@@ -763,7 +772,7 @@ void main() {
     expect(HiveBox.pendingTaskBox.length, 0);
 
     expect(HiveBox.taskBox.length, 1);
-    expect(HiveBox.taskBox.get('key')?.folderName, 'NoDeleteFolder');
+    expect(HiveBox.taskBox.get('key')?.folderId, 'NoDeleteFolder');
   });
 
   test('upate Folder', () async {

@@ -6,13 +6,13 @@ import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/bo
 class HomeViewFloatingActionButton extends StatelessWidget {
   const HomeViewFloatingActionButton({
     this.iconColor,
-    this.folderName,
+    this.folderId,
     this.type = false,
     super.key,
   });
 
   static const routeName = 'homeViewFloatingActionButton';
-  final String? folderName;
+  final String? folderId;
   final bool type;
   final Color? iconColor;
 
@@ -24,7 +24,7 @@ class HomeViewFloatingActionButton extends StatelessWidget {
         BottomSheetAddTask.showAddTaskBottomSheet(
           context,
           context.read<TodoCubit>(),
-          folderName,
+          folderId,
           type,
         );
       },

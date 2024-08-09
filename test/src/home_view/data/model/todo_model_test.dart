@@ -14,7 +14,7 @@ void main() {
     todoName: 'todoName',
     time: DateTime.now(),
     type: '',
-    folderName: '',
+    folderId: '',
   );
 
   test(
@@ -54,7 +54,7 @@ void main() {
       expect(todo.userName, 'test_user');
       expect(todo.isImportant, false);
       expect(todo.isCompleted, false);
-      expect(todo.folderName, 'test_folder');
+      expect(todo.folderId, 'test_folder');
     },
   );
 
@@ -72,7 +72,7 @@ void main() {
       expect(todo.userName, 'test_user');
       expect(todo.isImportant, false);
       expect(todo.isCompleted, false);
-      expect(todo.folderName, 'test_folder');
+      expect(todo.folderId, 'test_folder');
     },
   );
 
@@ -98,6 +98,6 @@ void main() {
     expect(updatedTodo.uid, tTodo.uid);
     expect(updatedTodo.userName, tTodo.userName);
     expect(updatedTodo.isCompleted, tTodo.isCompleted);
-    expect(updatedTodo.folderName, tTodo.folderName);
+    expect(updatedTodo.folderId, tTodo.folderId);
   });
 }

@@ -27,7 +27,7 @@ class TodoAdapter extends TypeAdapter<Todo> {
       isDelete: fields[10] as bool,
       isImportant: fields[3] as bool,
       isCompleted: fields[5] as bool,
-      folderName: fields[4] as String,
+      folderId: fields[4] as String,
     );
   }
 
@@ -42,7 +42,7 @@ class TodoAdapter extends TypeAdapter<Todo> {
       ..writeByte(3)
       ..write(obj.isImportant)
       ..writeByte(4)
-      ..write(obj.folderName)
+      ..write(obj.folderId)
       ..writeByte(5)
       ..write(obj.isCompleted)
       ..writeByte(6)

@@ -44,6 +44,7 @@ class Strings {
   static const String allFolderview = 'All';
   static const String folder = 'FolderName';
   static const String lastPage = 'lastPages';
+  static const String newFolder = 'newFolder';
 
   static const taskFolder = Folder(
     folderName: Strings.tasks,

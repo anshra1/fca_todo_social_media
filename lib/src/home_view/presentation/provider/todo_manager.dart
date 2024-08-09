@@ -32,8 +32,7 @@ class TodoManager extends ChangeNotifier {
         list.where((todo) => todo.dueTime.correctDateCheck()).toList();
     folderLengths = {};
     for (final todo in list) {
-      folderLengths[todo.folderName] =
-          (folderLengths[todo.folderName] ?? 0) + 1;
+      folderLengths[todo.folderId] = (folderLengths[todo.folderId] ?? 0) + 1;
     }
 
     notifyListeners();
@@ -44,7 +43,7 @@ class TodoManager extends ChangeNotifier {
   int get allTodoLength => list.length;
   int get publicTodoLength => publicTodos.length;
   int get plannedTodoLength => plannedTodos.length;
-  int folderTodoLength(String folderName) => folderLengths[folderName] ?? 0;
+  int folderTodoLength(String folderId) => folderLengths[folderId] ?? 0;
 
   @override
   void dispose() {

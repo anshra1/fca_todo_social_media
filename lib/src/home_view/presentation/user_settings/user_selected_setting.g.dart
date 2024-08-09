@@ -6,7 +6,7 @@ part of 'user_selected_setting.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ViewSelectedSettingAdapter extends TypeAdapter<Setting> {
+class SettingAdapter extends TypeAdapter<Setting> {
   @override
   final int typeId = 10;
 
@@ -38,7 +38,7 @@ class ViewSelectedSettingAdapter extends TypeAdapter<Setting> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ViewSelectedSettingAdapter &&
+      other is SettingAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -7,9 +7,11 @@ import 'package:flutter_learning_go_router/core/common/dialog/alert_dialog_model
 import 'package:flutter_learning_go_router/core/common/dialog/error_dialog.dart';
 import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
 import 'package:flutter_learning_go_router/core/extension/string_extension.dart';
+import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/core/utils/core_utils.dart';
 import 'package:flutter_learning_go_router/src/auth/presentation/import.dart';
+import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/animation.dart';
@@ -24,7 +26,7 @@ class BottomSheetAddTask {
   static void showAddTaskBottomSheet(
     BuildContext context,
     TodoCubit cubit,
-    String? folderName,
+    String? folderId,
     bool type,
   ) {
     showModalBottomSheet<void>(
@@ -34,7 +36,7 @@ class BottomSheetAddTask {
         return BlocProvider.value(
           value: cubit,
           child: AddTaskBottomSheet(
-            folderName: folderName,
+            folderId: folderId,
             type: type,
           ),
         );
@@ -44,15 +46,16 @@ class BottomSheetAddTask {
 }
 
 class AddTaskBottomSheet extends HookWidget {
-  const AddTaskBottomSheet({this.folderName, this.type = false, super.key});
+  const AddTaskBottomSheet({this.folderId, this.type = false, super.key});
 
-  final String? folderName;
+  final String? folderId;
   final bool type;
 
   @override
   Widget build(BuildContext context) {
     final controller = useTextEditingController();
-    final folderNotifier = useValueNotifier<String?>(folderName);
+    final folderNotifier =
+        ValueNotifier<String>(folderId != null ? folderId! : Strings.tasksId);
     final dueDateNotifier = useValueNotifier('');
     final typeNotifier = useValueNotifier(type);
 
@@ -80,7 +83,7 @@ class AddTaskBottomSheet extends HookWidget {
                   autofocus: true,
                   onEditingComplete: () => context.pop(),
                   decoration: InputDecoration(
-                    hintText: 'Add a task',
+                    hintText: 'Add Task',
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(16).copyWith(left: 25),
                     suffixIcon: Padding(
@@ -100,9 +103,7 @@ class AddTaskBottomSheet extends HookWidget {
                               todoId: id,
                               todoName: controller.text.trim(),
                               time: DateTime.now(),
-                              folderName: folderNotifier.value != null
-                                  ? folderNotifier.value!
-                                  : Strings.tasks,
+                              folderId: folderNotifier.value,
                               dueTime: dueDateNotifier.value,
                               type: typeNotifier.value
                                   ? Strings.public
@@ -127,31 +128,32 @@ class AddTaskBottomSheet extends HookWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      if (folderNotifier.value == null)
-                        ValueListenableBuilder(
-                          valueListenable: folderNotifier,
-                          builder: (context, folderNa, widget) {
-                            return TextButton.icon(
-                              icon: const Icon(Icons.list),
-                              label: Text(folderNotifier.value ?? 'Set folder'),
-                              onPressed: () async {
-                                final folder =
-                                    await showModalBottomSheet<String>(
-                                  context: context,
-                                  builder: (context) {
-                                    return const ShowFolderBottomSheet();
-                                  },
-                                );
+                      ValueListenableBuilder(
+                        valueListenable: folderNotifier,
+                        builder: (context, idFolder, widget) {
+                          final folderName = HiveBox.folderBox.get(idFolder);
+                          final name = folderName?.folderName ?? '';
+                          return folderId == Strings.tasksId &&
+                                  idFolder.isNotEmpty
+                              ? TextButton.icon(
+                                  icon: const Icon(Icons.list),
+                                  label: Text(name),
+                                  onPressed: () async {
+                                    final folderId =
+                                        await showModalBottomSheet<String>(
+                                            context: context,
+                                            builder: (context) {
+                                              return const ShowFolderBottomSheet();
+                                            });
 
-                                if (folder != null) {
-                                  folderNotifier.value = folder;
-                                }
-                              },
-                            );
-                          },
-                        )
-                      else
-                        const SizedBox.shrink(),
+                                    if (folderId != null) {
+                                      folderNotifier.value = folderId;
+                                    }
+                                  },
+                                )
+                              : const SizedBox.shrink();
+                        },
+                      ),
                       ValueListenableBuilder(
                         valueListenable: dueDateNotifier,
                         builder: (context, dueDate, widget) {

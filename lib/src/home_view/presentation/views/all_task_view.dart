@@ -24,7 +24,7 @@ class _AllTaskViewState extends State<AllTaskView> {
         return CustomScrollView(
           slivers: HiveBox.folderBox.values.expand((folder) {
             final folderList = HiveBox.taskBox.values.where((todo) {
-              return todo.folderName == folder.folderName;
+              return todo.folderId == folder.folderName;
             });
             return [
               if (folderList.isNotEmpty)
@@ -50,11 +50,11 @@ class _AllTaskViewState extends State<AllTaskView> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final todo = folderList.elementAt(index);
-                          return expanded.value
-                              ? ListTile(
-                                  title: Text('Item $index in ${todo.todoName}'),
-                                )
-                              : null;
+                        return expanded.value
+                            ? ListTile(
+                                title: Text('Item $index in ${todo.todoName}'),
+                              )
+                            : null;
                       },
                       childCount: folderList.length,
                     ),

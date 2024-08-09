@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:math';
 
@@ -82,6 +81,7 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
 
   @override
   Future<void> addTask(Todo todo) async {
+    print('cubit datasource $todo');
     try {
       if (_taskBox.isOpen && _pendingBox.isOpen && todo.todoName.isNotEmpty) {
         await _taskBox.put(todo.todoId, todo);
@@ -130,7 +130,7 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
       }
 
       final filterTodos = HiveBox.taskBox.values.where((todo) {
-        final folder = todo.folderName;
+        final folder = todo.folderId;
 
         if (filterData == Strings.isCompleted) {
           return todo.isCompleted == true;
@@ -180,7 +180,7 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
 
       if (getFolder != null) {
         for (final todo in _taskBox.values.toList()) {
-          if (todo.folderName == getFolder.folderName) {
+          if (todo.folderId == getFolder.folderName) {
             await _taskBox.delete(todo.todoId);
 
             await _pendingBox.put(
@@ -578,6 +578,7 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
         switch (currentJob) {
           case TodoWhat.create:
             final todoModel = TodoModel.fromTodo(whatTodo.object as Todo);
+            print('uploading ${todoModel}');
             await userDocRefTodos.doc(todoModel.todoId).set(todoModel.toMap());
 
           case TodoWhat.delete:

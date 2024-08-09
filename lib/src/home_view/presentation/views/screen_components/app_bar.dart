@@ -10,14 +10,14 @@ class HomeViewAppBar extends HookWidget implements PreferredSizeWidget {
   const HomeViewAppBar({
     required this.title,
     required this.appBarColor,
-    required this.onSortSelected,
-    required this.onThemeChanged,
-    required this.onShowCompletedTasksChanged,
-    required this.isFolder,
-    required this.renameListFunction,
-    required this.deleteListFunction,
-    required this.showCompletedTaskNotifier,
-    required this.isSort,
+    this.onSortSelected,
+    this.onThemeChanged,
+    this.onShowCompletedTasksChanged,
+    this.isFolder = false,
+    this.renameListFunction,
+    this.deleteListFunction,
+    this.showCompletedTaskNotifier,
+    this.isSort = false,
     this.extraIMenuItems = const [],
     super.key,
   });
@@ -54,6 +54,12 @@ class HomeViewAppBar extends HookWidget implements PreferredSizeWidget {
         actions: [
           PopupMenuButton<String>(
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              if (isFolder)
+                PopupMenuItem<String>(
+                  value: 'Rename list',
+                  onTap: renameListFunction,
+                  child: _buildMenuItem(Icons.delete, 'Rename list'),
+                ),
               if (isSort)
                 PopupMenuItem<String>(
                   value: 'Sort by',

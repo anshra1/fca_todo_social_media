@@ -43,12 +43,18 @@ class AppRoutes {
             final folderId = (state.extra
                     as Map<String, dynamic>?)?[Strings.folderId] as String? ??
                 '';
+
+            final newFolder = (state.extra
+                    as Map<String, dynamic>?)?[Strings.newFolder] as bool? ??
+                false;
+
             return _buildTransition(
               child: BlocProvider<TodoCubit>.value(
                 value: sl<TodoCubit>(),
                 child: FolderView(
                   title: title,
                   folderid: folderId,
+                  newFolder: newFolder,
                 ),
               ),
               state: state,
@@ -63,6 +69,19 @@ class AppRoutes {
               child: BlocProvider<TodoCubit>.value(
                 value: sl<TodoCubit>(),
                 child: const PublicTodos(),
+              ),
+              state: state,
+            );
+          },
+        ),
+        GoRoute(
+          path: AddFolderDialog.routeName,
+          name: AddFolderDialog.routeName,
+          pageBuilder: (_, state) {
+            return _buildTransition(
+              child: BlocProvider<TodoCubit>.value(
+                value: sl<TodoCubit>(),
+                child: const AddFolderDialog(),
               ),
               state: state,
             );

@@ -38,11 +38,25 @@ class GlobalWidgetDialog {
     _childNotifier?.value = child;
   }
 
-  void hide() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _childNotifier?.dispose();
-    _childNotifier = null;
+ void hide() {
+    print("Attempting to hide GlobalWidgetDialog");
+    if (_overlayEntry != null) {
+      print("OverlayEntry exists, removing it");
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+      print("OverlayEntry removed and set to null");
+    } else {
+      print("OverlayEntry was already null");
+    }
+    if (_childNotifier != null) {
+      print("Disposing _childNotifier");
+      _childNotifier!.dispose();
+      _childNotifier = null;
+      print("_childNotifier disposed and set to null");
+    } else {
+      print("_childNotifier was already null");
+    }
+    print("GlobalWidgetDialog hide complete");
   }
 
   void dispose() {

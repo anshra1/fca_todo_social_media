@@ -1,38 +1,39 @@
-// ignore_for_file: require_trailing_commas
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_learning_go_router/core/common/dialog/alert_dialog_model.dart';
 import 'package:flutter_learning_go_router/core/common/dialog/delete_dialog.dart';
+import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
 import 'package:flutter_learning_go_router/core/enum/sort_criteria.dart';
 import 'package:flutter_learning_go_router/core/extension/list_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/services/import.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/import.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/base_class.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/all_todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/home_screen.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/custom_list_tile.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/folder_tile.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/rename_folder_dialog.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/sorted_tile_title.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 
-class FolderView extends StatefulWidget {
+class FolderView extends StatefulHookWidget {
   const FolderView({
     required this.title,
     required this.folderid,
+    required this.newFolder,
     super.key,
   });
 
   static const routeName = 'folder-view';
   final String title;
   final String folderid;
+  final bool newFolder;
 
   @override
   State<FolderView> createState() => _FolderViewState();
@@ -44,18 +45,79 @@ class _FolderViewState extends State<FolderView> {
   @override
   void initState() {
     super.initState();
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (widget.newFolder && !GlobalWidgetDialog.instance().isShowing) {
+    //     GlobalWidgetDialog.instance().show(
+    //         context: context,
+    //         child: BlocProvider.value(
+    //           value: sl<TodoCubit>(),
+    //           child: const AddFolderDialog(),
+    //         ));
+    //   } else {
+    //     GlobalWidgetDialog.instance().isShowing
+    //         ? GlobalWidgetDialog.instance().hide()
+    //         : null;
+    //   }
+    //   // showModalBottomSheet<void>(
+    //   //   context: context,
+    //   //   isScrollControlled: true,
+    //   //   isDismissible: false,
+    //   //   backgroundColor: Colors.transparent,
+    //   //   builder: (context) {
+    //   //     return Padding(
+    //   //       padding: EdgeInsets.only(
+    //   //           bottom: MediaQuery.of(context).viewInsets.bottom +
+    //   //               20 // 20 is the gap
+    //   //           ),
+    //   //       child: SingleChildScrollView(
+    //   //         child: Center(
+    //   //           child: Column(
+    //   //             mainAxisSize: MainAxisSize.min,
+    //   //             children: [
+    //   //               Container(
+    //   //                 width: context.width * 0.9, // Adjust width as needed
+    //   //                 margin: const EdgeInsets.symmetric(vertical: 10),
+    //   //                 child: const AddFolderDialog(),
+    //   //               ),
+    //   //             ],
+    //   //           ),
+    //   //         ),
+    //   //       ),
+    //   //     );
+    //   //   },
+    //   // );
+    // });
+
     setting = ValueNotifier<Setting>(
         HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting());
+  }
+
+  @override
+  void dispose() {
+    setting.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseClass(
       title: widget.title,
-      folderName: widget.title,
+      folderId: widget.folderid,
       isFolder: true,
       settingNotifier: setting,
-      renameListFunction: () {},
+      renameListFunction: () {
+        final folder = HiveBox.folderBox.get(widget.folderid);
+        if (folder != null) {
+          GlobalWidgetDialog.instance().show(
+            context: context,
+            child: BlocProvider.value(
+              value: sl<TodoCubit>(),
+              child: RenameFolderDialog(folder.folderId),
+            ),
+          );
+        }
+      },
       deleteListFunction: () async {
         final folder = HiveBox.folderBox.get(widget.folderid);
         if (folder != null) {
@@ -78,7 +140,7 @@ class _FolderViewState extends State<FolderView> {
               colorName: setting.value.colorName,
             ),
           );
-    
+
           return ValueListenableBuilder(
             valueListenable: HiveBox.taskBox.listenable(),
             builder: (context, box, __) {
@@ -88,43 +150,42 @@ class _FolderViewState extends State<FolderView> {
                   var folderItemListTodos = <Todo>[];
                   if (setting.value.sortCriteria == SortCriteria.none) {
                     folderItemListTodos = HiveBox.taskBox.values
-                        .where((todo) => todo.folderName == widget.title)
+                        .where((todo) => todo.folderId == widget.folderid)
                         .toList();
                   } else {
                     if (sortReverse.value) {
                       folderItemListTodos = HiveBox.taskBox.values
-                          .where((todo) => todo.folderName == widget.title)
+                          .where((todo) => todo.folderId == widget.folderid)
                           .toList()
                           .sortByCriteria(setting.value.sortCriteria)
                           .reversed
                           .toList();
                     } else {
                       folderItemListTodos = HiveBox.taskBox.values
-                          .where((todo) => todo.folderName == widget.title)
+                          .where((todo) => todo.folderId == widget.folderid)
                           .toList()
                           .sortByCriteria(setting.value.sortCriteria)
                           .toList();
                     }
                   }
-    
+
                   final unDoneTodoList = useMemoized(() {
                     return folderItemListTodos
                         .where((todo) => !todo.isCompleted)
                         .toList();
                   }, [folderItemListTodos]);
-    
+
                   final doneTodoList = useMemoized(() {
                     return folderItemListTodos
                         .where((todo) => todo.isCompleted)
                         .toList();
                   }, [folderItemListTodos]);
-    
+
                   return Column(
                     children: [
                       if (setting.value.sortCriteria != SortCriteria.none)
                         SortedTileTitle(
-                          title:
-                              'Sorted by ${setting.value.sortCriteria.name}',
+                          title: 'Sorted by ${setting.value.sortCriteria.name}',
                           isCollapse: sortReverse.value,
                           reverseSortCriteria: () =>
                               sortReverse.value = !sortReverse.value,

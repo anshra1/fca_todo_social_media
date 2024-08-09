@@ -27,7 +27,7 @@ void main() async {
     ..registerAdapter(WhatTodoAdapter())
     ..registerAdapter(CommonAdapter())
     ..registerAdapter(SortCriteriaAdapter())
-    ..registerAdapter(ViewSelectedSettingAdapter())
+    ..registerAdapter(SettingAdapter())
     ..registerAdapter(FolderAdapter());
 
   await HiveBox.init();

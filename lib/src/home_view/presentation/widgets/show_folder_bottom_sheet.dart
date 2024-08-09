@@ -19,7 +19,7 @@ class ShowFolderBottomSheet extends StatelessWidget {
           ),
           title: folder.folderName,
           onTap: () {
-            context.pop(folder.folderName);
+            context.pop(folder.folderId);
           },
         ).leftPadding(20);
       }).toList(),

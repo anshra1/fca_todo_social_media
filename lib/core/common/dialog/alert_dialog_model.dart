@@ -18,6 +18,9 @@ extension Present<T> on AlertDialogModel<T> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
           title: Text(title),
           content: Text(message),
           actions: buttons.entries.map(

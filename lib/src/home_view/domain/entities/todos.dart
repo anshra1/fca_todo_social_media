@@ -16,7 +16,7 @@ class Todo extends Equatable {
     this.isDelete = false,
     this.isImportant = false,
     this.isCompleted = false,
-    this.folderName = 'Task',
+    this.folderId = 'Task',
   });
 
   const Todo.defaults({
@@ -26,7 +26,7 @@ class Todo extends Equatable {
     required String todoName,
     required DateTime time,
     required String type,
-    required String folderName,
+    required String folderId,
     required bool important,
     String? dueTime,
   }) : this(
@@ -38,7 +38,7 @@ class Todo extends Equatable {
           userName: userName,
           isImportant: important,
           isCompleted: false,
-          folderName: folderName,
+          folderId: folderId,
           dueTime: dueTime ?? '',
         );
 
@@ -52,7 +52,7 @@ class Todo extends Equatable {
           userName: 'ansh',
           isImportant: true,
           isCompleted: false,
-          folderName: 'Tasks',
+          folderId: 'Tasks',
           dueTime: DateTime.now().toIso8601String(),
         );
 
@@ -66,7 +66,7 @@ class Todo extends Equatable {
   final bool isImportant;
 
   @HiveField(4)
-  final String folderName;
+  final String folderId;
 
   @HiveField(5)
   final bool isCompleted;
@@ -99,7 +99,7 @@ class Todo extends Equatable {
         'date: $date, '
         'type: $type, '
         'uid: $uid, '
-        'folderName: $folderName, '
+        'folderId: $folderId, '
         'userName: $userName}';
   }
 
@@ -112,7 +112,7 @@ class Todo extends Equatable {
         date,
         type,
         uid,
-        folderName,
+        folderId,
         userName,
       ];
 }

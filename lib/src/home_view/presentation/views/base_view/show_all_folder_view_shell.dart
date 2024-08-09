@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_learning_go_router/core/enum/sort_criteria.dart';
 import 'package:flutter_learning_go_router/core/extension/list_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
+import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/base_class.dart';
@@ -23,7 +24,7 @@ class ShowAllFoldersShell extends StatefulHookWidget {
   });
 
   final String title;
-  final List<Todo> Function(String folderName) filterFolderTodosFunc;
+  final List<Todo> Function(String folderId) filterFolderTodosFunc;
   final List<Todo> Function() listOfTodoFunction;
   final bool isFloatingActionButton;
   final bool showImportantSheetTile;
@@ -64,6 +65,7 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
   Widget build(BuildContext context) {
     return BaseClass(
       title: widget.title,
+      folderId: Strings.tasksId,
       showImportantSheetTile: widget.showImportantSheetTile,
       isFloatingActionButton: widget.isFloatingActionButton,
       body: ValueListenableBuilder(
@@ -136,7 +138,7 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
     return HiveBox.folderBox.values.sorted((folder1, folder2) {
       return folder1.folderName.compareTo(folder2.folderName);
     }).expand((folder) {
-      final folderList = widget.filterFolderTodosFunc(folder.folderName);
+      final folderList = widget.filterFolderTodosFunc(folder.folderId);
 
       return [
         if (folderList.isNotEmpty)

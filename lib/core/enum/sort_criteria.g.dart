@@ -33,18 +33,19 @@ class SortCriteriaAdapter extends TypeAdapter<SortCriteria> {
     switch (obj) {
       case SortCriteria.none:
         writer.writeByte(0);
-
+        break;
       case SortCriteria.important:
         writer.writeByte(1);
-
+        break;
       case SortCriteria.dueDate:
         writer.writeByte(2);
-
+        break;
       case SortCriteria.alphabetical:
         writer.writeByte(3);
-
+        break;
       case SortCriteria.creationDate:
         writer.writeByte(4);
+        break;
     }
   }
 
