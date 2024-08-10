@@ -1,17 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars, require_trailing_commas
-
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/extension/string_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/base_class.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/custom_list_tile.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/folder_tile.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
+part of '../../import.dart';
 
 sealed class PlannedManager {
   static List<DateTime> getSortedDates(Map<DateTime, List<Todo>> groupedTodos) {
@@ -56,7 +43,7 @@ class BaseDateGroupedTodosView extends HookWidget {
     return BaseClass(
       title: title,
       isSort: false,
-      isFloatingActionButton: false,
+      isFloatingActionButton: true,
       settingNotifier: ValueNotifier<Setting>(
         HiveBox.settingBox.get(title) ?? Setting.defaultSetting(),
       ),

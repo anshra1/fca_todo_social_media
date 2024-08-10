@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class GlobalWidgetDialog {
   GlobalWidgetDialog._sharedInstance();
-  static final GlobalWidgetDialog _shared = GlobalWidgetDialog._sharedInstance();
+  static final GlobalWidgetDialog _shared =
+      GlobalWidgetDialog._sharedInstance();
   factory GlobalWidgetDialog.instance() => _shared;
 
   OverlayEntry? _overlayEntry;
@@ -38,25 +39,15 @@ class GlobalWidgetDialog {
     _childNotifier?.value = child;
   }
 
- void hide() {
-    print("Attempting to hide GlobalWidgetDialog");
+  void hide() {
     if (_overlayEntry != null) {
-      print("OverlayEntry exists, removing it");
       _overlayEntry!.remove();
       _overlayEntry = null;
-      print("OverlayEntry removed and set to null");
-    } else {
-      print("OverlayEntry was already null");
-    }
+    } else {}
     if (_childNotifier != null) {
-      print("Disposing _childNotifier");
       _childNotifier!.dispose();
       _childNotifier = null;
-      print("_childNotifier disposed and set to null");
-    } else {
-      print("_childNotifier was already null");
-    }
-    print("GlobalWidgetDialog hide complete");
+    } else {}
   }
 
   void dispose() {

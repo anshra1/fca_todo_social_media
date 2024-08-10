@@ -1,16 +1,5 @@
-// ignore_for_file: lines_longer_than_80_chars
 
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/common/widgets/circular_container.dart';
-import 'package:flutter_learning_go_router/core/extension/date_time_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/int_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/string_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:provider/provider.dart';
-
+part of '../import.dart';
 Color _getColor(DateTime? date) {
   if (date == null) return Colors.grey;
   return DateTime.now().isBefore(DateTime(date.year, date.month, date.day))

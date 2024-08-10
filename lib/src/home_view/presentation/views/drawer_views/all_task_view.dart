@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+
+part of '../../import.dart';
 
 class AllTaskView extends StatefulHookWidget {
   const AllTaskView({super.key});

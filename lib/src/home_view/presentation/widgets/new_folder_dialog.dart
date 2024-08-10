@@ -1,14 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/folder_view.dart';
-import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
+part of '../import.dart';
 
 class AddFolderDialog extends HookWidget {
   static const routeName = 'new-folder-view';
@@ -25,9 +15,9 @@ class AddFolderDialog extends HookWidget {
       controller.addListener(() {
         textNotifier.value = controller.text.trim();
       });
-      Future.delayed(const Duration(milliseconds: 100), () {
+    
         focusNode.requestFocus();
-      });
+      
       return null;
     });
 

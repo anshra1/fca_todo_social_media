@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/common/widgets/circular_container.dart';
-import 'package:flutter_learning_go_router/core/common/widgets/rounded_container.dart';
-import 'package:flutter_learning_go_router/core/extension/widget_extension.dart';
 
+part of '../import.dart';
 class SelectDateWidget extends StatelessWidget {
   const SelectDateWidget({
     required this.onPressed,

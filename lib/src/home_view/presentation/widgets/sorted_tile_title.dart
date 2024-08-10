@@ -1,11 +1,5 @@
-// ignore_for_file: require_trailing_commas
 
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/int_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/core/extension/widget_extension.dart';
-
+part of '../import.dart';
 class SortedTileTitle extends StatelessWidget {
   const SortedTileTitle({
     required this.title,

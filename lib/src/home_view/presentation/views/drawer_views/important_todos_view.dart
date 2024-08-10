@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/only_todo_view_shell.dart';
+
+part of '../../import.dart';
 
 class ImportantTodos extends HookWidget {
   const ImportantTodos({super.key});
@@ -25,7 +22,7 @@ class ImportantTodos extends HookWidget {
       listOfTodo: () => _getImportantTodos(showCompletedTaskNotifier.value),
       showImportantSheetTile: false,
       showCompletedTask: true,
-      isFloatingActionButton: false,
+      isFloatingActionButton: true,
       showCompletedTaskNotifier: showCompletedTaskNotifier,
       onShowCompletedTasksChanged: () =>
           showCompletedTaskNotifier.value = !showCompletedTaskNotifier.value,

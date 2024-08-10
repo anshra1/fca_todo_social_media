@@ -1,24 +1,8 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_positional_boolean_parameters
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/common/dialog/alert_dialog_model.dart';
-import 'package:flutter_learning_go_router/core/common/dialog/error_dialog.dart';
-import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/string_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/core/strings/strings.dart';
-import 'package:flutter_learning_go_router/core/utils/core_utils.dart';
-import 'package:flutter_learning_go_router/src/auth/presentation/import.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/select_date_widget.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/show_folder_bottom_sheet.dart';
-import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
+
+
+part of '../import.dart';
 
 class BottomSheetAddTask {
   BottomSheetAddTask._();
@@ -159,7 +143,7 @@ class AddTaskBottomSheet extends HookWidget {
   ValueListenableBuilder<bool> setType(ValueNotifier<bool> typeNotifier) {
     return ValueListenableBuilder(
       valueListenable: typeNotifier,
-      builder: (context, type, widget) {
+      builder: (context, _, widget) {
         return TextButton.icon(
           icon: const Icon(Icons.av_timer_sharp),
           label: Text(

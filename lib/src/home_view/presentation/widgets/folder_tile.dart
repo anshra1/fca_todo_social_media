@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/int_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/core/extension/widget_extension.dart';
+
+part of '../import.dart';
 
 class FolderTile extends StatelessWidget {
   const FolderTile({

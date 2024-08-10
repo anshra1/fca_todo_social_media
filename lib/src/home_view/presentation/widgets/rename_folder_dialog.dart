@@ -1,18 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
-import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/core/strings/strings.dart';
-import 'package:flutter_learning_go_router/src/home_view/data/model/folder_model.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/folder_view.dart';
-import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
+
+
+part of '../import.dart';
+
+
 
 class RenameFolderDialog extends HookWidget {
   const RenameFolderDialog(this.folderId, {super.key});

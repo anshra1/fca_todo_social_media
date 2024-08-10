@@ -1,5 +1,4 @@
 import 'package:flutter_learning_go_router/core/hive/common.dart';
-import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/w_todo.dart';

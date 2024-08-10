@@ -1,10 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/common/widgets/cached_network_image.dart';
-import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/int_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/core/res/gap_ex.dart';
 
+part of '../import.dart';
 class DrawerHead extends StatelessWidget {
   const DrawerHead({super.key});
 

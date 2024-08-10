@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/enum/sort_criteria.dart';
-import 'package:gap/gap.dart';
+
+part of '../import.dart';
 
 class SortingBottomSheet {
   SortingBottomSheet._();

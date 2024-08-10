@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_learning_go_router/core/enum/todo_what.dart';
 import 'package:flutter_learning_go_router/core/error/exception.dart';
-import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/common.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/firebase_strings.dart';

@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/extension/widget_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_tile.dart';
-import 'package:go_router/go_router.dart';
 
+part of '../import.dart';
 class ShowFolderBottomSheet extends StatelessWidget {
   const ShowFolderBottomSheet({super.key});
 

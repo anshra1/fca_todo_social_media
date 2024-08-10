@@ -1,14 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/enum/sort_criteria.dart';
-import 'package:flutter_learning_go_router/core/extension/list_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/base_class.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/custom_list_tile.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/sorted_tile_title.dart';
-import 'package:hive_flutter/adapters.dart';
+
+part of '../../import.dart';
 
 class OnlyTodoShell extends StatefulWidget {
   const OnlyTodoShell({

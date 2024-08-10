@@ -1,15 +1,5 @@
-// ignore_for_file: lines_longer_than_80_chars
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/core/strings/strings.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/folder_view.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_tile.dart';
-import 'package:hive_flutter/adapters.dart';
-
+part of '../import.dart';
 class DrawerFolderView extends StatelessWidget {
   const DrawerFolderView({super.key});
 

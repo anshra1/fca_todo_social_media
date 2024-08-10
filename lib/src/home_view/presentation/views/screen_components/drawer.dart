@@ -1,32 +1,6 @@
-// ignore_for_file: lines_longer_than_80_chars
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_learning_go_router/core/common/global_dialog/global_dialog.dart';
-import 'package:flutter_learning_go_router/core/extension/context_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/common.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/core/res/gap_ex.dart';
-import 'package:flutter_learning_go_router/core/services/import.dart';
-import 'package:flutter_learning_go_router/core/strings/strings.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/folder_view.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/new_folder.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/all_todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/completed_todo.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/public_todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/important_todos_view.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/planned_view.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_folder_view.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_header.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/drawer_tile.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/new_list_tile.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/rename_folder_dialog.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+
+part of '../../import.dart';
 
 final GlobalKey<NavigatorState> key = GlobalKey<NavigatorState>();
 

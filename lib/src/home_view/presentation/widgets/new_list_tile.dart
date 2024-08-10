@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/extension/text_style.dart';
-import 'package:flutter_learning_go_router/core/res/gap_ex.dart';
 
+part of '../import.dart';
 class NewListTile extends StatelessWidget {
   const NewListTile({required this.onPressed, super.key});
 

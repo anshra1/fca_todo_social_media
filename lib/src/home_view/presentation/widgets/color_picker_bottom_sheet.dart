@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/extension/color_extension.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
 
+part of '../import.dart';
 class ColorPickerBottomSheet {
   ColorPickerBottomSheet._();
 

@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/bottom_sheet_add_task.dart';
+
+part of '../../import.dart';
 
 class HomeViewFloatingActionButton extends StatelessWidget {
   const HomeViewFloatingActionButton({
