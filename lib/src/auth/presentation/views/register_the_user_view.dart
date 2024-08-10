@@ -102,9 +102,7 @@ class RegisterTheUserView extends HookWidget {
               kGaps20,
               GenderButton(gender: gender),
               kGaps30,
-              DateOfBirth(
-                dateOfBirth: dateOfBirth,
-              ),
+              DateOfBirth(dateOfBirth: dateOfBirth),
               kGaps20,
               ListenableBuilder(
                 listenable: buttonState,

@@ -15,7 +15,7 @@ import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo
 import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/base_class.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/all_todos.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/all_todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/custom_list_tile.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/folder_tile.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/widgets/rename_folder_dialog.dart';

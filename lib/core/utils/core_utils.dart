@@ -55,6 +55,7 @@ class CoreUtils {
         return AlertDialog(
           content: SizedBox(
             height: 320,
+            width: context.width * .9,
             child: SfDateRangePicker(
               backgroundColor: Colors.white,
               maxDate: DateTime.now().add(const Duration(days: 365 * 5)),
@@ -101,72 +102,6 @@ class CoreUtils {
     return selectedDate;
   }
 
-  static void showDatePicker(BuildContext context) {
-    // var controller = OverlayPortalController();
 
-    // OverlayPortal(
-    //   controller: controller,
-    //   overlayChildBuilder: (BuildContext context) {
-    //     return YourOverlayContent();
-    //   },
-    //   child: YourTriggerWidget(),
-    // );
-  }
-
-  static OverlayEntry over = OverlayEntry(
-    builder: (context) {
-      return Material(
-        color: Colors.black.withAlpha(150),
-        child: Container(
-          height: context.height,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: SfDateRangePicker(
-              backgroundColor: Colors.white,
-              maxDate: DateTime.now().add(const Duration(days: 365 * 5)),
-              onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                if (args.value is DateTime) {
-                  // selectedDate = args.value as DateTime;
-                }
-              },
-              monthViewSettings: const DateRangePickerMonthViewSettings(
-                viewHeaderStyle: DateRangePickerViewHeaderStyle(
-                  backgroundColor: Colors.white,
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey,
-                  ),
-                ),
-              ),
-              headerStyle: DateRangePickerHeaderStyle(
-                backgroundColor: Colors.white,
-                textAlign: TextAlign.center,
-                textStyle: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade800,
-                ),
-              ),
-              selectionColor: Colors.blue.shade700,
-              todayHighlightColor: context.theme.colorScheme.secondary,
-              selectionTextStyle: const TextStyle(color: Colors.white),
-              showActionButtons: true,
-              onSubmit: (Object? value) {
-                Navigator.of(context).pop();
-              },
-              onCancel: () {
-                //    selectedDate = null;
-                over.remove();
-                //Navigator.of(context).pop();
-              },
-            ),
-          ),
-        ),
-      );
-    },
-  );
+ 
 }

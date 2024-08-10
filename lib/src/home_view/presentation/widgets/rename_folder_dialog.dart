@@ -10,7 +10,7 @@ import 'package:flutter_learning_go_router/src/home_view/data/model/folder_model
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/utils/last_navigations.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/base_view/folder_view.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/folder_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 

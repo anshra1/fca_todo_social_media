@@ -46,6 +46,9 @@ class Strings {
   static const String lastPage = 'lastPages';
   static const String newFolder = 'newFolder';
 
+  // first time load
+  static const String firstTimeLoad = 'firstTimeLods';
+
   static const taskFolder = Folder(
     folderName: Strings.tasks,
     folderId: Strings.tasksId,

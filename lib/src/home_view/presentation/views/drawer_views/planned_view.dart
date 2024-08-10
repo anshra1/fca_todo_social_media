@@ -56,6 +56,7 @@ class BaseDateGroupedTodosView extends HookWidget {
     return BaseClass(
       title: title,
       isSort: false,
+      isFloatingActionButton: false,
       settingNotifier: ValueNotifier<Setting>(
         HiveBox.settingBox.get(title) ?? Setting.defaultSetting(),
       ),

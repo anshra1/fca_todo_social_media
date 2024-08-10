@@ -25,7 +25,7 @@ class ImportantTodos extends HookWidget {
       listOfTodo: () => _getImportantTodos(showCompletedTaskNotifier.value),
       showImportantSheetTile: false,
       showCompletedTask: true,
-      isFloatingActionButton: true,
+      isFloatingActionButton: false,
       showCompletedTaskNotifier: showCompletedTaskNotifier,
       onShowCompletedTasksChanged: () =>
           showCompletedTaskNotifier.value = !showCompletedTaskNotifier.value,

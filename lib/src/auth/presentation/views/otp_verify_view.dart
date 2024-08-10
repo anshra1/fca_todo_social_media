@@ -80,8 +80,10 @@ class _OtpVerifyViewState extends State<OtpVerifyView> {
         } else if (state is AuthSuccessState) {
           showingDialog = true;
           if (state.userExist) {
+            print(state.userExist);
             context.go(HomeClass.routeName);
           } else {
+            print(state.userExist);
             context.go(RegisterTheUserView.routeName);
           }
         } else if (state is ResendOtpSucessState) {

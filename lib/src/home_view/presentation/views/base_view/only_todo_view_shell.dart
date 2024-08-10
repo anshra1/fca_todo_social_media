@@ -14,7 +14,7 @@ class OnlyTodoShell extends StatefulWidget {
   const OnlyTodoShell({
     required this.title,
     required this.listOfTodo,
-    this.isFloatingActionButton = false,
+    required this.isFloatingActionButton,
     this.type = false,
     this.showImportantSheetTile = true,
     this.showCompletedTask = false,
@@ -92,6 +92,7 @@ class ListViewTodoBuilder extends StatelessWidget {
       builder: (context) {
         final reverseSortCriteria = useState(false);
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (setting.sortCriteria != SortCriteria.none)
               SortedTileTitle(
@@ -104,32 +105,34 @@ class ListViewTodoBuilder extends StatelessWidget {
                       .copyWith(sortCriteria: SortCriteria.none);
                 },
               ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.listOfTodo().length,
-              itemBuilder: (context, index) {
-                var showList = <Todo>[];
-
-                if (setting.sortCriteria != SortCriteria.none) {
-                  if (reverseSortCriteria.value) {
-                    showList = widget
-                        .listOfTodo()
-                        .sortByCriteria(setting.sortCriteria)
-                        .reversed
-                        .toList();
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.listOfTodo().length,
+                itemBuilder: (context, index) {
+                  var showList = <Todo>[];
+                      
+                  if (setting.sortCriteria != SortCriteria.none) {
+                    if (reverseSortCriteria.value) {
+                      showList = widget
+                          .listOfTodo()
+                          .sortByCriteria(setting.sortCriteria)
+                          .reversed
+                          .toList();
+                    } else {
+                      showList = widget
+                          .listOfTodo()
+                          .sortByCriteria(setting.sortCriteria)
+                          .toList();
+                    }
                   } else {
-                    showList = widget
-                        .listOfTodo()
-                        .sortByCriteria(setting.sortCriteria)
-                        .toList();
+                    showList = widget.listOfTodo();
                   }
-                } else {
-                  showList = widget.listOfTodo();
-                }
-
-                final todo = showList.elementAt(index);
-                return CustomListTile(todo: todo);
-              },
+                      
+                  final todo = showList.elementAt(index);
+                  return CustomListTile(todo: todo);
+                },
+              ),
             ),
           ],
         );

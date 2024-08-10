@@ -30,6 +30,17 @@ class AppRouter {
         ),
       ),
       GoRoute(
+        path: PhoneNumberView.routeName,
+        name: PhoneNumberView.routeName,
+        pageBuilder: (_, state) => _buildTransition(
+          child: BlocProvider(
+            create: (context) => sl<AuthBloc>(),
+            child: const PhoneNumberView(),
+          ),
+          state: state,
+        ),
+      ),
+      GoRoute(
         path: OtpVerifyView.routeName,
         name: OtpVerifyView.routeName,
         pageBuilder: (_, state) {
@@ -48,6 +59,18 @@ class AppRouter {
             state: state,
           );
         },
+      ),
+
+       GoRoute(
+        path: RegisterTheUserView.routeName,
+        name: RegisterTheUserView.routeName,
+        pageBuilder: (_, state) => _buildTransition(
+          child: BlocProvider(
+            create: (context) => sl<AuthBloc>(),
+            child: const RegisterTheUserView(),
+          ),
+          state: state,
+        ),
       ),
       // ... other routes
       ShellRoute(

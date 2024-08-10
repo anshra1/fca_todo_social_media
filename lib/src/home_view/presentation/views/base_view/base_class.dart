@@ -52,13 +52,8 @@ class BaseClass extends HookWidget {
   Widget build(BuildContext context) {
     final syncManager = useValueNotifier(SyncManager(context));
 
-    useEffect(() {
-    //  return syncManager.value.stopUploading;
-    }, []);
-
     return BlocListener<TodoCubit, TodoState>(
       listener: (context, state) {
-        debugPrint('sat Home $state');
         if (state is TodoError) {
           ErrorDialog(message: state.message).present(context);
           syncManager.value.stopUploading();

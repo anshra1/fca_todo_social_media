@@ -10,6 +10,7 @@ class PublicTodos extends OnlyTodoShell {
           isFloatingActionButton: true,
           title: 'Public',
           type: true,
+          
           listOfTodo: _getPublicTodos,
         );
 

@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/import.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/views/class/public_todos.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/views/drawer_views/public_todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/views/home_screen.dart';
 import 'package:flutter_learning_go_router/src/profile/views/profile_view.dart';
 import 'package:flutter_learning_go_router/src/public_view/public_view.dart';

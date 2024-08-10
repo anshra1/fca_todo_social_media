@@ -32,13 +32,7 @@ class _AllTaskViewState extends State<AllTaskView> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
-                      onPressed: () {
-                        expanded.value = !expanded.value;
-                        // setState(() {
-                        //   expandedStates[folder.folderName] =
-                        //       !(expandedStates[folder.folderName] ?? false);
-                        // });
-                      },
+                      onPressed: () => expanded.value = !expanded.value,
                       child: Text(folder.folderName),
                     ),
                   ),

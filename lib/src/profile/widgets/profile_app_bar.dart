@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_learning_go_router/core/extension/text_style.dart';
+import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/src/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_learning_go_router/src/profile/views/edit_profile_view.dart';
 import 'package:flutter_learning_go_router/src/profile/widgets/pop_up_item.dart';
@@ -42,7 +43,8 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
                     color: Colors.black,
                   ),
                 ),
-                onTap: () {
+                onTap: ()  {
+                   HiveBox.clear();
                   context.read<AuthBloc>().add(SignOutEvent());
                 },
               ),

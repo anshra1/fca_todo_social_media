@@ -95,7 +95,7 @@ class TodoCubit extends Cubit<TodoState> {
   Future<void> addTask(Todo todo) async {
     emit(TodoLoading(state));
     final result = await _addTask(todo);
-    print('cubit $todo');
+   // print('cubit $todo');
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) {
@@ -212,17 +212,17 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> updateMakeImportant(String todoId) async {
-    print('sat important $state');
+    
 
     emit(TodoLoading(state));
-    print('sat2 important $state');
+    
     final result = await _updateMakeImportant(todoId);
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) {
-        print('sat3 important $state');
+      
         emit(UpdateImportantCompletedState());
-        print('sat4 important $state');
+        
       },
     );
   }
@@ -247,7 +247,7 @@ class TodoCubit extends Cubit<TodoState> {
     required String folderId,
     required String newFolderName,
   }) async {
-    'cubit start'.printFirst();
+   // 'cubit start'.printFirst();
     emit(TodoLoading(state));
     final result = await _updateFolder(
       UpdateFolderParams(folderId: folderId, newFolderName: newFolderName),
@@ -258,7 +258,7 @@ class TodoCubit extends Cubit<TodoState> {
         emit(TodoActionCompleted());
       },
     );
-    'cubit end'.printFirst();
+   // 'cubit end'.printFirst();
   }
 
   Future<void> getErrors() async {

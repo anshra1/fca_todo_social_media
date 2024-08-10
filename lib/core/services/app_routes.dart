@@ -10,7 +10,7 @@ class AppRoutes {
       path: HomeClass.routeName,
       name: HomeClass.routeName,
       pageBuilder: (context, state) {
-        return _buildTransition(
+        return _buildTransitionHomeScreen(
           child: BlocProvider(
             create: (context) => sl<TodoCubit>(),
             child: const HomeClass(),
@@ -186,6 +186,21 @@ class AppRoutes {
         return FadeTransition(opacity: animation, child: child);
       },
       transitionDuration: kThemeAnimationDuration,
+      reverseTransitionDuration: kThemeAnimationDuration,
+    );
+  }
+
+   static Page<void> _buildTransitionHomeScreen({
+    required Widget child,
+    required GoRouterState state,
+  }) {
+    return CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      transitionDuration: const Duration(milliseconds: 200),
       reverseTransitionDuration: kThemeAnimationDuration,
     );
   }

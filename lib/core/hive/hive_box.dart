@@ -29,7 +29,6 @@ class HiveBox {
     pendingTaskBox = await Hive.openBox<WhatTodo>(HiveBox.pendingTaskBoxName);
     commonBox = await Hive.openBox<Common>(HiveBox.commonBoxName);
     settingBox = await Hive.openBox<Setting>(HiveBox.settingBoxName);
-    await folderBox.put(Strings.tasksId, Strings.taskFolder);
   }
 
   static Future<void> close() async {

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_learning_go_router/core/enum/todo_what.dart';
 import 'package:flutter_learning_go_router/core/error/exception.dart';
+import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/common.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/firebase_strings.dart';
@@ -78,10 +79,10 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
   StreamSubscription<dynamic>? _todosSubcription;
 
   final _errorController = StreamController<Exception>.broadcast();
+  bool intial = true;
 
   @override
   Future<void> addTask(Todo todo) async {
-    print('cubit datasource $todo');
     try {
       if (_taskBox.isOpen && _pendingBox.isOpen && todo.todoName.isNotEmpty) {
         await _taskBox.put(todo.todoId, todo);
@@ -339,50 +340,41 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
   }
 
   @override
-  Future<void> firstTimeLoad() async {
-    const firstTime = 'isFirstTime';
-    final isFirstTime =
-        HiveBox.commonBox.get(firstTime, defaultValue: const Common(true));
-
-    if (isFirstTime == const Common(true)) {
-      await HiveBox.clear();
-      await loadInitialData();
-      await HiveBox.commonBox.put(firstTime, const Common(false));
-    }
-  }
-
-  @override
   Future<void> startListening() async {
     try {
       await AutorizeUserUtils.authorizeUser(_auth);
       final uid = _auth.currentUser?.uid;
 
-      if (uid != null) {
-        final lastSync = HiveBox.commonBox.get(
-          FirebaseStrings.lastSyncTime,
-          defaultValue: Common(DateTime(1111)),
-        );
+      if (!intial) {
+        if (uid != null) {
+          final lastSync = HiveBox.commonBox.get(
+            FirebaseStrings.lastSyncTime,
+            defaultValue: Common(DateTime(1111)),
+          );
 
-        if (lastSync != null) {
-          final time = lastSync.value as DateTime;
+          if (lastSync != null) {
+            final time = lastSync.value as DateTime;
 
-          _todosSubcription = _firestore
-              .collection(FirebaseStrings.users)
-              .doc(uid)
-              .collection(FirebaseStrings.todos)
-              .where(Strings.isDeleted, isEqualTo: false)
-              .where(FirebaseStrings.lastSyncTime, isGreaterThan: time.toUtc())
-              .snapshots()
-              .listen(_handleTodoChanges, onError: _handleError);
+            _todosSubcription = _firestore
+                .collection(FirebaseStrings.users)
+                .doc(uid)
+                .collection(FirebaseStrings.todos)
+                .where(Strings.isDeleted, isEqualTo: false)
+                .where(FirebaseStrings.lastSyncTime,
+                    isGreaterThan: time.toUtc())
+                .snapshots()
+                .listen(_handleTodoChanges, onError: _handleError);
 
-          _folderSubcription = _firestore
-              .collection(FirebaseStrings.users)
-              .doc(uid)
-              .collection(FirebaseStrings.folders)
-              .snapshots()
-              .listen(_handleFolderChanges);
+            _folderSubcription = _firestore
+                .collection(FirebaseStrings.users)
+                .doc(uid)
+                .collection(FirebaseStrings.folders)
+                .snapshots()
+                .listen(_handleFolderChanges, onError: _handleError);
+          }
         }
       }
+      intial = false;
     } catch (e) {
       debugPrint(e.toString());
       _handleError(e);
@@ -408,26 +400,26 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
     }
   }
 
-  Future<void> handleDeletedTodos(String uid) async {
-    // final batch = _firestore.batch();
-    final snapshot = await _firestore
-        .collection(FirebaseStrings.users)
-        .doc(uid)
-        .collection(FirebaseStrings.todos)
-        .where(Strings.delete, isEqualTo: true)
-        .get();
+  // Future<void> handleDeletedTodos(String uid) async {
+  //   // final batch = _firestore.batch();
+  //   final snapshot = await _firestore
+  //       .collection(FirebaseStrings.users)
+  //       .doc(uid)
+  //       .collection(FirebaseStrings.todos)
+  //       .where(Strings.delete, isEqualTo: true)
+  //       .get();
 
-    for (final doc in snapshot.docs) {
-      await _firestore
-          .collection(FirebaseStrings.users)
-          .doc(uid)
-          .collection(FirebaseStrings.todos)
-          .doc(doc.reference.id)
-          .delete();
-    }
+  //   for (final doc in snapshot.docs) {
+  //     await _firestore
+  //         .collection(FirebaseStrings.users)
+  //         .doc(uid)
+  //         .collection(FirebaseStrings.todos)
+  //         .doc(doc.reference.id)
+  //         .delete();
+  //   }
 
-    //await batch.commit();
-  }
+  //   //await batch.commit();
+  // }
 
   void _handleTodoChanges(QuerySnapshot snapshot) {
     try {
@@ -508,9 +500,12 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
     _todosSubcription = null;
   }
 
-  Future<void> loadInitialData() async {
+  @override
+  Future<void> firstTimeLoad() async {
     try {
       await AutorizeUserUtils.authorizeUser(_auth);
+
+      await createFolders(Strings.taskFolder);
 
       final todosSnapshot = await _firestore
           .collection(FirebaseStrings.users)
@@ -578,7 +573,7 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
         switch (currentJob) {
           case TodoWhat.create:
             final todoModel = TodoModel.fromTodo(whatTodo.object as Todo);
-            print('uploading ${todoModel}');
+
             await userDocRefTodos.doc(todoModel.todoId).set(todoModel.toMap());
 
           case TodoWhat.delete:

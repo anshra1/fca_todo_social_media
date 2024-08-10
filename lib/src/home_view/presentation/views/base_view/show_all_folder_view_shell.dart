@@ -65,7 +65,6 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
   Widget build(BuildContext context) {
     return BaseClass(
       title: widget.title,
-      folderId: Strings.tasksId,
       showImportantSheetTile: widget.showImportantSheetTile,
       isFloatingActionButton: widget.isFloatingActionButton,
       body: ValueListenableBuilder(

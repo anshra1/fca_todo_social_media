@@ -9,16 +9,19 @@ class PublicView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: HiveBox.taskBox.values.map((todo) {
-          return GestureDetector(
-            onTap: (){
-              HiveBox.clear();
-            },
-              child: Text(
-                  '${todo.todoName} ${todo.folderId} ${todo.isCompleted}'));
-        }).toList(),
+      body: GestureDetector(
+        onTap: () => HiveBox.clear,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: HiveBox.folderBox.values.map((folder) {
+            return GestureDetector(
+              onTap: (){
+                HiveBox.clear();
+              },
+                child: Text(
+                    '${folder.folderName} ${folder.folderId}'));
+          }).toList(),
+        ),
       ),
     );
   }
