@@ -1,4 +1,3 @@
-
 part of '../../import.dart';
 
 class OnlyTodoShell extends StatefulWidget {
@@ -34,7 +33,8 @@ class _OnlyTodoShellState extends State<OnlyTodoShell> {
   void initState() {
     super.initState();
     settingNotifier = ValueNotifier<Setting>(
-      HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting(),
+      //  HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting(),
+      TodoManager.getViewSelectedSetting(widget.title),
     );
   }
 
@@ -52,7 +52,7 @@ class _OnlyTodoShellState extends State<OnlyTodoShell> {
         valueListenable: settingNotifier,
         builder: (context, setting, _) {
           return ValueListenableBuilder(
-            valueListenable: HiveBox.taskBox.listenable(),
+            valueListenable: TodoManager.taskBoxListenable,
             builder: (context, __, _) {
               return ListViewTodoBuilder(
                 settingNotifier: settingNotifier,
@@ -102,7 +102,7 @@ class ListViewTodoBuilder extends StatelessWidget {
                 itemCount: widget.listOfTodo().length,
                 itemBuilder: (context, index) {
                   var showList = <Todo>[];
-                      
+
                   if (setting.sortCriteria != SortCriteria.none) {
                     if (reverseSortCriteria.value) {
                       showList = widget
@@ -119,7 +119,7 @@ class ListViewTodoBuilder extends StatelessWidget {
                   } else {
                     showList = widget.listOfTodo();
                   }
-                      
+
                   final todo = showList.elementAt(index);
                   return CustomListTile(todo: todo);
                 },

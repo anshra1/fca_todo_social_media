@@ -23,7 +23,7 @@ abstract class TodoRepo {
   ResultFuture<void> createFolders(Folder folderName);
 
   ResultFuture<void> deleteFolders(String folderId);
-  ResultFuture<void> newDeleteFolders(String folderId);
+  
 
   ResultFuture<void> updateFolder(
       {required String folderId, required String newFolderName});

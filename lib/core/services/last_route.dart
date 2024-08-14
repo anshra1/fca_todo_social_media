@@ -21,7 +21,6 @@ class LastRouteObserver extends NavigatorObserver {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('lastRoute', route.settings.name!);
 
-      print('Last route saved: ${route.settings.name}');
       await HiveBox.commonBox.put('lastRoute', Common(route.settings.name!));
     }
   }

@@ -1,13 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars, require_trailing_commas
-import 'package:flutter/material.dart';
-import 'package:flutter_learning_go_router/core/enum/sort_criteria.dart';
-import 'package:flutter_learning_go_router/core/extension/color_extension.dart';
-import 'package:flutter_learning_go_router/core/extension/string_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
-import 'package:flutter_learning_go_router/core/strings/strings.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+part of '../import.dart';
 
 class TodoManager extends ChangeNotifier {
   TodoManager() {
@@ -49,6 +40,59 @@ class TodoManager extends ChangeNotifier {
   void dispose() {
     HiveBox.taskBox.listenable().removeListener(_updateTodos);
     super.dispose();
+  }
+
+  static ValueListenable<Box<Todo>> get taskBoxListenable =>
+      HiveBox.taskBox.listenable();
+
+  static ValueListenable<Box<Setting>> get settingBoxListenable =>
+      HiveBox.settingBox.listenable();
+
+  static Iterable<Folder> get folderList => HiveBox.folderBox.values;
+
+  static Iterable<Todo> get todoList => HiveBox.taskBox.values;
+
+  static Folder? getFolder(String folderId) {
+    return HiveBox.folderBox.get(folderId);
+  }
+
+  static Future<void> navigateToLastRoute(BuildContext context) async {
+    final lastRoute = HiveBox.commonBox.get(Strings.lastPage)?.value
+        as Map<dynamic, dynamic>?;
+
+    (() {
+      if (lastRoute != null &&
+          lastRoute[Strings.lastPage].toString() != HomeClass.routeName) {
+        context.pushReplacementNamed(
+          lastRoute[Strings.lastPage] as String? ?? AllTodosView.routeName,
+          extra: {
+            Strings.folderName: lastRoute[Strings.folderName] as String?,
+            Strings.folderId: lastRoute[Strings.folderId] as String?,
+          },
+        );
+      } else {
+        context.pushReplacementNamed(AllTodosView.routeName);
+      }
+    }).executeAfterFrame();
+  }
+
+  static void firstTimeLoad(BuildContext context) {
+    var firstTimeLoad = (HiveBox.commonBox
+            .get(Strings.firstTimeLoad, defaultValue: const Common(false)))
+        ?.value as bool;
+
+    if (!firstTimeLoad) {
+      context.read<TodoCubit>().firstTimeLoad();
+      HiveBox.commonBox.put(Strings.firstTimeLoad, const Common(true));
+    }
+  }
+
+  static Setting getViewSelectedSetting(String title) {
+    return HiveBox.settingBox.get(title) ?? Setting.defaultSetting();
+  }
+
+  static void addSetting(String title, Setting setting) {
+    HiveBox.settingBox.put(title, setting);
   }
 
   static void updateViewSelectedSetting({

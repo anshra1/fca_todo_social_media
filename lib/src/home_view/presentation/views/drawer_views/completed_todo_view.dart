@@ -11,7 +11,7 @@ class CompletedTodoView extends ShowAllFoldersShell {
         );
 
   static List<Todo> _getCompletedTodos(String folderName) {
-    return HiveBox.taskBox.values
+    return TodoManager.todoList
         .where(
           (todo) => todo.isCompleted && todo.folderId == folderName,
         )
@@ -19,7 +19,7 @@ class CompletedTodoView extends ShowAllFoldersShell {
   }
 
   static List<Todo> _getCompletedTodosAll() {
-    return HiveBox.taskBox.values.where((todo) => todo.isCompleted).toList();
+    return TodoManager.todoList.where((todo) => todo.isCompleted).toList();
   }
 
   static const routeName = 'completed-todo-view';

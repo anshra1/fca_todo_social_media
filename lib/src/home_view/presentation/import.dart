@@ -12,9 +12,8 @@ import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/core/utils/core_utils.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/cubit/todo_cubit.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/custom_hook/app_life_cycle.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/user_settings/user_selected_setting.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/utils/sync_manager.dart';
 import 'package:flutter_learning_go_router/core/enum/sort_criteria.dart';
 import 'package:flutter_learning_go_router/core/extension/list_extension.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
@@ -42,6 +41,7 @@ import 'package:flutter_learning_go_router/core/extension/function_extension.dar
 import 'package:flutter_learning_go_router/core/hive/common.dart';
 import 'package:flutter_learning_go_router/src/home_view/presentation/custom_hook/stream_custom_hook.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
 
 part 'views/base_view/base_class.dart';
 part 'views/base_view/only_todo_view_shell.dart';
@@ -70,5 +70,5 @@ part 'widgets/folder_tile.dart';
 part 'views/screen_components/drawer.dart';
 part 'views/screen_components/app_bar.dart';
 part 'views/screen_components/floating_action_button.dart';
-
+part 'provider/todo_manager.dart';
 part 'views/home_screen.dart';

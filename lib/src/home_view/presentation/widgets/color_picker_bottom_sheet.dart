@@ -32,7 +32,7 @@ class ColorSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('sheet ${setting.value}');
+   
     return SizedBox(
       height: 110,
       child: Column(

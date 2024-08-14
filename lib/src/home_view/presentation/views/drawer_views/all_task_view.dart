@@ -1,4 +1,3 @@
-
 part of '../../import.dart';
 
 class AllTaskView extends StatefulHookWidget {
@@ -16,11 +15,11 @@ class _AllTaskViewState extends State<AllTaskView> {
     final expanded = ValueNotifier(true);
 
     return ValueListenableBuilder(
-      valueListenable: HiveBox.taskBox.listenable(),
+      valueListenable: TodoManager.taskBoxListenable,
       builder: (BuildContext context, Box<Todo> value, Widget? child) {
         return CustomScrollView(
-          slivers: HiveBox.folderBox.values.expand((folder) {
-            final folderList = HiveBox.taskBox.values.where((todo) {
+          slivers: TodoManager.folderList.expand((folder) {
+            final folderList = TodoManager.todoList.where((todo) {
               return todo.folderId == folder.folderName;
             });
             return [

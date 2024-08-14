@@ -7,7 +7,7 @@ class ImportantTodos extends HookWidget {
   static const routeName = 'important-todos-view';
 
   static List<Todo> _getImportantTodos(bool showCompleted) {
-    return HiveBox.taskBox.values.where((todo) {
+    return TodoManager.todoList.where((todo) {
       return todo.isImportant == true &&
           (showCompleted || todo.isCompleted == false);
     }).toList();

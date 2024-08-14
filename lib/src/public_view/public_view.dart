@@ -13,13 +13,12 @@ class PublicView extends StatelessWidget {
         onTap: () => HiveBox.clear,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: HiveBox.folderBox.values.map((folder) {
+          children: HiveBox.pendingTaskBox.values.map((folder) {
             return GestureDetector(
-              onTap: (){
-                HiveBox.clear();
-              },
-                child: Text(
-                    '${folder.folderName} ${folder.folderId}'));
+                onTap: () {
+                  HiveBox.clear();
+                },
+                child: Text(folder.what));
           }).toList(),
         ),
       ),

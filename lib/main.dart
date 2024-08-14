@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_learning_go_router/core/common/provider/user_provider.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/res/app_theme.dart';
-import 'package:flutter_learning_go_router/src/home_view/presentation/provider/todo_manager.dart';
+import 'package:flutter_learning_go_router/src/home_view/presentation/import.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'core/enum/sort_criteria.dart';

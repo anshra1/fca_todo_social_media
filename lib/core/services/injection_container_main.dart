@@ -28,7 +28,6 @@ Future<void> initTodo() async {
         updateNameTodo: sl(),
         updateFolder: sl(),
         streamError: sl(),
-        newDeleteFolder: sl(),
       ),
     )
     ..registerLazySingleton(() => AddTask(todoRepo: sl()))
@@ -46,7 +45,6 @@ Future<void> initTodo() async {
     ..registerLazySingleton(() => UpdateCompleted(todoRepo: sl()))
     ..registerLazySingleton(() => UpdateMakeImportant(todoRepo: sl()))
     ..registerLazySingleton(() => UpdateNameTodo(todoRepo: sl()))
-    ..registerLazySingleton(() => NewDeleteFolder(todoRepo: sl()))
     ..registerLazySingleton(() => UpdateFolder(todoRepo: sl()))
     ..registerLazySingleton<TodoRepo>(
       () => AuthTodoImpl(remoteDataSource: sl()),

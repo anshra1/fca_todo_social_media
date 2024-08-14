@@ -1,10 +1,8 @@
 import 'dart:async';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter_learning_go_router/core/error/exception.dart';
 import 'package:flutter_learning_go_router/core/error/failure.dart';
 import 'package:flutter_learning_go_router/core/utils/typedef.dart';
-
 import 'package:flutter_learning_go_router/src/home_view/data/datasources/remote_data_source.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
@@ -192,9 +190,4 @@ class AuthTodoImpl implements TodoRepo {
         );
   }
 
-  @override
-  ResultFuture<void> newDeleteFolders(String folderId) {
-    // TODO: implement newDeleteFolders
-    throw UnimplementedError();
-  }
 }

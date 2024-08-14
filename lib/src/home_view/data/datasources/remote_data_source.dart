@@ -1,16 +1,16 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_learning_go_router/core/enum/todo_what.dart';
 import 'package:flutter_learning_go_router/core/error/exception.dart';
+import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
 import 'package:flutter_learning_go_router/core/hive/common.dart';
 import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
 import 'package:flutter_learning_go_router/core/strings/firebase_strings.dart';
 import 'package:flutter_learning_go_router/core/strings/strings.dart';
 import 'package:flutter_learning_go_router/core/utils/autrorize_user_utils.dart';
+import 'package:flutter_learning_go_router/core/utils/internet_connection_utils.dart';
 import 'package:flutter_learning_go_router/core/utils/typedef.dart';
 import 'package:flutter_learning_go_router/src/home_view/data/model/folder_model.dart';
 import 'package:flutter_learning_go_router/src/home_view/data/model/todo_model.dart';
@@ -18,6 +18,7 @@ import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/w_todo.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 abstract class TodoRemoteDataSource {
   const TodoRemoteDataSource();
@@ -76,9 +77,9 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
 
   StreamSubscription<dynamic>? _folderSubcription;
   StreamSubscription<dynamic>? _todosSubcription;
-
+  StreamSubscription<InternetStatus>? _internetStatusSubscription;
+  var _isUploading = false;
   final _errorController = StreamController<Exception>.broadcast();
-  bool intial = true;
 
   @override
   Future<void> addTask(Todo todo) async {
@@ -91,8 +92,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
           WhatTodo(what: TodoWhat.create, object: todo, key: todo.todoId),
         );
       }
-
-      await sync();
     } catch (e) {
       debugPrint('Error $e');
       throw const CacheException(message: 'Hive Error', statusCode: 501);
@@ -111,8 +110,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
           todo.todoId,
           WhatTodo(what: TodoWhat.delete, object: todo, key: todoId),
         );
-
-        await sync();
       }
     } catch (e) {
       debugPrint('Error $e');
@@ -164,8 +161,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
             key: folderName.folderId,
           ),
         );
-
-        await sync();
       }
     } catch (e) {
       debugPrint('Error $e');
@@ -176,7 +171,7 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
   @override
   Future<void> deleteFolders(String folderId) async {
     try {
-      final getFolder = HiveBox.folderBox.get(folderId);
+      final getFolder = _folderBox.get(folderId);
 
       if (getFolder != null) {
         for (final todo in _taskBox.values.toList()) {
@@ -200,8 +195,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
             key: getFolder.folderId,
           ),
         );
-        await sync();
-        //   _startUploadingPendingItems();
       }
     } catch (e) {
       debugPrint('Error $e');
@@ -224,8 +217,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
           ),
         );
       }
-
-      await sync();
     } catch (e) {
       debugPrint('Error $e');
       throw const CacheException(message: 'Hive Error', statusCode: 501);
@@ -234,8 +225,8 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
 
   @override
   Future<List<Folder>> getFolders() async {
-    if (HiveBox.folderBox.isOpen) {
-      return HiveBox.folderBox.values.toList();
+    if (_folderBox.isOpen) {
+      return _folderBox.values.toList();
     }
 
     return [];
@@ -255,7 +246,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
         todoId,
         WhatTodo(what: TodoWhat.isComleted, object: updatedTodo, key: todoId),
       );
-      await sync();
     }
   }
 
@@ -273,7 +263,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
         todoId,
         WhatTodo(what: TodoWhat.isImportant, object: updatedTodo, key: todoId),
       );
-      await sync();
     }
   }
 
@@ -282,16 +271,13 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
     final todo = _taskBox.get(todoID);
 
     if (todo != null) {
-      final updatedTodo =
-          TodoModel.fromTodo(todo).copyWith(todoName: newTodoName);
+      final updatedTodo = TodoModel.fromTodo(todo).copyWith(todoName: newTodoName);
       await _taskBox.put(todoID, updatedTodo);
 
       await _pendingBox.put(
         todoID,
         WhatTodo(what: TodoWhat.updateName, object: updatedTodo, key: todoID),
       );
-
-      await sync();
     }
   }
 
@@ -314,8 +300,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
             key: folderId,
           ),
         );
-
-        await sync();
       }
     } catch (e) {
       debugPrint('Error $e');
@@ -326,7 +310,11 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
   @override
   Future<void> sync() async {
     try {
-      await _uploadingPendingItems();
+      if (_pendingBox.isNotEmpty) {
+        await _uploadingPendingItems();
+      }
+
+      _pendingBox.listenable().addListener(_setUpInternetStatusListener);
     } on FirebaseException catch (e) {
       debugPrint('Error $e');
       throw const ServerException(message: 'Firebase Error', statusCode: 404);
@@ -338,44 +326,109 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
     }
   }
 
+  void _setUpInternetStatusListener() async {
+    if (_isUploading && _internetStatusSubscription != null) {
+      return;
+    }
+
+    if (await InternetConnectionUtils.haveInternet) {
+      await _uploadingPendingItems();
+      return;
+    }
+
+    _internetStatusSubscription = InternetConnectionUtils.listenToInternetStatus(
+      onInternetConnected: () async {
+        _isUploading = true;
+        await _uploadingPendingItems();
+      },
+      onError: (e, stackTrace) {
+        debugPrintStack(stackTrace: stackTrace);
+        _isUploading = false;
+        _internetStatusSubscription?.cancel();
+        _internetStatusSubscription = null;
+        _errorController.add(
+          ServerException(message: e.toString(), statusCode: '505'),
+        );
+      },
+    );
+  }
+
   @override
   Future<void> startListening() async {
     try {
       await AutorizeUserUtils.authorizeUser(_auth);
       final uid = _auth.currentUser?.uid;
 
-      if (!intial) {
-        if (uid != null) {
-          final lastSync = HiveBox.commonBox.get(
-            FirebaseStrings.lastSyncTime,
-            defaultValue: Common(DateTime(1111)),
-          );
-
-          if (lastSync != null) {
-            final time = lastSync.value as DateTime;
-
-            _todosSubcription = _firestore
-                .collection(FirebaseStrings.users)
-                .doc(uid)
-                .collection(FirebaseStrings.todos)
-                .where(Strings.isDeleted, isEqualTo: false)
-                .where(FirebaseStrings.lastSyncTime,
-                    isGreaterThan: time.toUtc())
-                .snapshots()
-                .listen(_handleTodoChanges, onError: _handleError);
-
-            _folderSubcription = _firestore
-                .collection(FirebaseStrings.users)
-                .doc(uid)
-                .collection(FirebaseStrings.folders)
-                .snapshots()
-                .listen(_handleFolderChanges, onError: _handleError);
-          }
-        }
+      if (uid == null) {
+        return;
       }
-      intial = false;
+
+      final lastSync = HiveBox.commonBox.get(
+        FirebaseStrings.lastSyncTime,
+        defaultValue: Common(DateTime(1111)),
+      );
+
+      if (lastSync != null) {
+        final time = lastSync.value as DateTime;
+
+        _todosSubcription = _firestore
+            .collection(FirebaseStrings.users)
+            .doc(uid)
+            .collection(FirebaseStrings.todos)
+            .where(Strings.isDeleted, isEqualTo: false)
+            .where(FirebaseStrings.lastSyncTime, isGreaterThan: time.toUtc())
+            .snapshots()
+            .listen(
+          (s) {
+            debugPrint('change');
+            _syncChangedDocuments(uid);
+          },
+          onError: _handleError,
+        );
+
+        _folderSubcription = _firestore
+            .collection(FirebaseStrings.users)
+            .doc(uid)
+            .collection(FirebaseStrings.folders)
+            .snapshots()
+            .listen(_handleFolderChanges, onError: _handleError);
+      }
     } catch (e) {
       debugPrint(e.toString());
+      _handleError(e);
+    }
+  }
+
+  Future<void> _syncChangedDocuments(String uid) async {
+    try {
+      final lastSync = HiveBox.commonBox.get(
+        FirebaseStrings.lastSyncTime,
+        defaultValue: Common(DateTime(1111)),
+      );
+
+      final time = (lastSync?.value as DateTime?) ?? DateTime(1111);
+
+      final querySnapshot = await _firestore
+          .collection(FirebaseStrings.users)
+          .doc(uid)
+          .collection(FirebaseStrings.todos)
+          .where(FirebaseStrings.lastSyncTime, isGreaterThan: time.toUtc())
+          .get();
+
+      for (final doc in querySnapshot.docs) {
+        final todoData = doc.data();
+        final todo = TodoModel.fromMap(todoData);
+
+        if (todo.isDelete) {
+          _taskBox.delete(todo.todoId);
+        } else {
+          _taskBox.put(todo.todoId, todo);
+        }
+      }
+
+      // Update lastSyncTime after processing all changes
+      HiveBox.commonBox.put(FirebaseStrings.lastSyncTime, Common(DateTime.now()));
+    } catch (e) {
       _handleError(e);
     }
   }
@@ -396,68 +449,6 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
           statusCode: '500',
         ),
       );
-    }
-  }
-
-  // Future<void> handleDeletedTodos(String uid) async {
-  //   // final batch = _firestore.batch();
-  //   final snapshot = await _firestore
-  //       .collection(FirebaseStrings.users)
-  //       .doc(uid)
-  //       .collection(FirebaseStrings.todos)
-  //       .where(Strings.delete, isEqualTo: true)
-  //       .get();
-
-  //   for (final doc in snapshot.docs) {
-  //     await _firestore
-  //         .collection(FirebaseStrings.users)
-  //         .doc(uid)
-  //         .collection(FirebaseStrings.todos)
-  //         .doc(doc.reference.id)
-  //         .delete();
-  //   }
-
-  //   //await batch.commit();
-  // }
-
-  void _handleTodoChanges(QuerySnapshot snapshot) {
-    try {
-      for (final change in snapshot.docChanges) {
-        switch (change.type) {
-          case DocumentChangeType.added:
-          case DocumentChangeType.modified:
-            debugPrint('change Modify ${change.type} ${Random().nextInt(100)}');
-            final todoData = change.doc.data();
-            if (todoData != null) {
-              final todo = TodoModel.fromMap(todoData as DataMap);
-              if (_taskBox.get(todo.todoId) != todo) {
-                if (todo.isDelete) {
-                  _taskBox.delete(todo.todoId);
-                } else {
-                  _taskBox.put(
-                    todo.todoId,
-                    todo.copyWith(date: DateTime.now()),
-                  );
-                }
-              }
-            }
-
-          case DocumentChangeType.removed:
-            debugPrint('change Delete ${change.type} ${Random().nextInt(100)}');
-            final todoData = change.doc.data();
-
-            if (todoData != null) {
-              final todo = TodoModel.fromMap(todoData as DataMap);
-              _taskBox.delete(todo.todoId);
-            }
-        }
-      }
-
-      HiveBox.commonBox
-          .put(FirebaseStrings.lastSyncTime, Common(DateTime.now()));
-    } catch (e) {
-      debugPrint(e.toString());
-      _handleError(e);
     }
   }
 
@@ -495,8 +486,13 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
   Future<void> stopListening() async {
     await _folderSubcription?.cancel();
     await _todosSubcription?.cancel();
+    await _internetStatusSubscription?.cancel();
+    _internetStatusSubscription = null;
     _folderSubcription = null;
     _todosSubcription = null;
+
+    _errorController.close();
+    _pendingBox.listenable().removeListener(_setUpInternetStatusListener);
   }
 
   @override
@@ -612,17 +608,15 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
               whatTodo.object as Folder,
             );
 
-            await userDocRefFolders.doc(folderModel.folderId).set(
-                  folderModel.toMap(),
-                );
+            await userDocRefFolders.doc(folderModel.folderId).set(folderModel.toMap());
 
           case TodoWhat.deleteFolder:
             await userDocRefFolders.doc(whatTodo.key).delete();
 
           case TodoWhat.updateFolder:
-            final folderModel =
-                FolderModel.fromFolder(whatTodo.object as Folder);
+            final folderModel = FolderModel.fromFolder(whatTodo.object as Folder);
             final data = folderModel.toMap();
+
             await userDocRefFolders
                 .doc((whatTodo.object as FolderModel).folderId)
                 .set(data);
@@ -641,6 +635,11 @@ class TodoRemoteDataSourceImpl extends TodoRemoteDataSource {
         message: e.toString(),
         statusCode: '505',
       );
+    } finally {
+      _internetStatusSubscription?.cancel();
+      _internetStatusSubscription = null;
+      _isUploading = false;
+      'end of $_isUploading'.printFirst();
     }
   }
 

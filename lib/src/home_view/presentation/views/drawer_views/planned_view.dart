@@ -8,7 +8,7 @@ sealed class PlannedManager {
   }
 
   static List<Todo> getIncompleteTodos() {
-    return HiveBox.taskBox.values.where((todo) => !todo.isCompleted).toList();
+    return TodoManager.todoList.where((todo) => !todo.isCompleted).toList();
   }
 }
 
@@ -45,10 +45,11 @@ class BaseDateGroupedTodosView extends HookWidget {
       isSort: false,
       isFloatingActionButton: true,
       settingNotifier: ValueNotifier<Setting>(
-        HiveBox.settingBox.get(title) ?? Setting.defaultSetting(),
+        // HiveBox.settingBox.get(title) ?? Setting.defaultSetting(),
+        TodoManager.getViewSelectedSetting(title),
       ),
       body: ValueListenableBuilder<Box<Todo>>(
-        valueListenable: HiveBox.taskBox.listenable(),
+        valueListenable: TodoManager.taskBoxListenable,
         builder: (context, box, _) {
           final todos = listOfTodo();
 

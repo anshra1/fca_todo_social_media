@@ -34,57 +34,64 @@ class BaseClass extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final syncManager = useValueNotifier(SyncManager(context));
+    'life'.printFirst();
+    final appLifecycleState = useAppLifecycleTodo();
+
+    print('app in base class $appLifecycleState');
 
     return BlocListener<TodoCubit, TodoState>(
       listener: (context, state) {
         if (state is TodoError) {
           ErrorDialog(message: state.message).present(context);
-          syncManager.value.stopUploading();
         } else if (state is SyncCompleted) {
-          syncManager.value.stopUploading();
           CoreUtils.showSnackBar(context, 'Sync Completed');
-        }
+        } else if (state is UpdateImportantCompletedState) {}
       },
-      child: ValueListenableBuilder(
-        valueListenable: settingNotifier,
-        builder: (context, setting, _) {
-          TodoManager.updateViewSelectedSetting(
-            title: title,
-            color: setting.colorName,
-            sortCriteria: setting.sortCriteria,
-          );
-          final color = setting.colorName.toColor();
-          return Scaffold(
-            backgroundColor: color,
-            floatingActionButton: isFloatingActionButton
-                ? HomeViewFloatingActionButton(
-                    iconColor: color, folderId: folderId, type: type)
-                : null,
-            appBar: HomeViewAppBar(
-              title: title,
-              appBarColor: color,
-              onSortSelected: () async => BaseClassFunction.onSortSelected(
-                context: context,
-                title: title,
-                showImportantSheetTile: showImportantSheetTile,
-                settingNotifier: settingNotifier,
-              ),
-              onThemeChanged: () => BaseClassFunction.onThemeChanged(
-                context: context,
-                settingNotifier: settingNotifier,
-              ),
-              onShowCompletedTasksChanged: onShowCompletedTasksChanged,
-              showCompletedTaskNotifier: showCompletedTaskNotifier,
-              isFolder: isFolder,
-              renameListFunction: renameListFunction,
-              deleteListFunction: deleteListFunction,
-              isSort: isSort,
-            ),
-            drawer: const HomeViewDrawer(),
-            body: body,
-          );
+      child: RefreshIndicator(
+        onRefresh: () {
+          context.read<TodoCubit>().sync();
+          return Future<void>.value();
         },
+        child: ValueListenableBuilder(
+          valueListenable: settingNotifier,
+          builder: (context, setting, _) {
+            TodoManager.updateViewSelectedSetting(
+              title: title,
+              color: setting.colorName,
+              sortCriteria: setting.sortCriteria,
+            );
+            final color = setting.colorName.toColor();
+            return Scaffold(
+              backgroundColor: color,
+              floatingActionButton: isFloatingActionButton
+                  ? HomeViewFloatingActionButton(
+                      iconColor: color, folderId: folderId, type: type)
+                  : null,
+              appBar: HomeViewAppBar(
+                title: title,
+                appBarColor: color,
+                onSortSelected: () async => BaseClassFunction.onSortSelected(
+                  context: context,
+                  title: title,
+                  showImportantSheetTile: showImportantSheetTile,
+                  settingNotifier: settingNotifier,
+                ),
+                onThemeChanged: () => BaseClassFunction.onThemeChanged(
+                  context: context,
+                  settingNotifier: settingNotifier,
+                ),
+                onShowCompletedTasksChanged: onShowCompletedTasksChanged,
+                showCompletedTaskNotifier: showCompletedTaskNotifier,
+                isFolder: isFolder,
+                renameListFunction: renameListFunction,
+                deleteListFunction: deleteListFunction,
+                isSort: isSort,
+              ),
+              drawer: const HomeViewDrawer(),
+              body: body,
+            );
+          },
+        ),
       ),
     );
   }
@@ -99,10 +106,9 @@ sealed class BaseClassFunction {
     required bool showImportantSheetTile,
     required ValueNotifier<Setting>? settingNotifier,
   }) async {
-    final currentSetting =
-        HiveBox.settingBox.get(title) ?? Setting.defaultSetting();
-    final sortCriteriaSheetValue =
-        await SortingBottomSheet.showSortOptionsSheet(
+    final currentSetting = TodoManager.getViewSelectedSetting(title);
+
+    final sortCriteriaSheetValue = await SortingBottomSheet.showSortOptionsSheet(
       showImportant: showImportantSheetTile,
       context: context,
       sortCriteria: currentSetting.sortCriteria,

@@ -27,6 +27,7 @@ class _UserDataHookState extends HookState<LocalUserModel?, _UserDataHook> {
   void initHook() {
     super.initHook();
     _subscription = StreamUserDataUtis.userDataStream.listen((userData) {
+      // ignore: use_build_context_synchronously
       context.read<UserProvider>().user = userData;
     });
   }

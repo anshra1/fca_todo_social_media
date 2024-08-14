@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_learning_go_router/core/enum/todo_views.dart';
 import 'package:flutter_learning_go_router/core/error/exception.dart';
 import 'package:flutter_learning_go_router/core/error/failure.dart';
 import 'package:flutter_learning_go_router/core/extension/object_extension.dart';
-import 'package:flutter_learning_go_router/core/hive/common.dart';
-import 'package:flutter_learning_go_router/core/hive/hive_box.dart';
+import 'package:flutter_learning_go_router/src/home_view/data/datasources/remote_data_source.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/entities/todos.dart';
 
@@ -20,7 +18,6 @@ import 'package:flutter_learning_go_router/src/home_view/domain/usecases/delete_
 import 'package:flutter_learning_go_router/src/home_view/domain/usecases/first_time_load.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/usecases/get_folders.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/usecases/get_todos.dart';
-import 'package:flutter_learning_go_router/src/home_view/domain/usecases/new_delete_folder.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/usecases/start_listening.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/usecases/stop_listening.dart';
 import 'package:flutter_learning_go_router/src/home_view/domain/usecases/stream_error.dart';
@@ -51,7 +48,6 @@ class TodoCubit extends Cubit<TodoState> {
     required UpdateNameTodo updateNameTodo,
     required UpdateFolder updateFolder,
     required StreamError streamError,
-    required NewDeleteFolder newDeleteFolder,
   })  : _addTask = addTask,
         _createFolder = createFolder,
         _deleteFolder = deleteFolder,
@@ -68,7 +64,6 @@ class TodoCubit extends Cubit<TodoState> {
         _updateMakeImportant = updateMakeImportant,
         _updateNameTodo = updateNameTodo,
         _updateFolder = updateFolder,
-        _newDeleteFolder = newDeleteFolder,
         super(TodoInitial());
 
   final AddTask _addTask;
@@ -87,15 +82,13 @@ class TodoCubit extends Cubit<TodoState> {
   final UpdateNameTodo _updateNameTodo;
   final UpdateFolder _updateFolder;
   final StreamError _streamError;
-  final NewDeleteFolder _newDeleteFolder;
 
-  late StreamSubscription<Either<Failure, Exception>> subscription;
+  StreamSubscription<Either<Failure, Exception>>? subscription;
 
-  
   Future<void> addTask(Todo todo) async {
     emit(TodoLoading(state));
     final result = await _addTask(todo);
-   // print('cubit $todo');
+    // print('cubit $todo');
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) {
@@ -172,6 +165,7 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> startListening() async {
+    'app enter listensing'.printFirst();
     emit(TodoLoading(state));
     final result = await _startListening();
     result.fold(
@@ -181,26 +175,31 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> stopListening() async {
-    // emit(TodoLoading(state));
+    'app enter stop listening'.printFirst();
     final result = await _stopListening();
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) => emit(StopListeningsCompletedState()),
     );
-    // await subscription.cancel();
+    'enter 2 stop listeing'.printFirst();
+   
+      await subscription?.cancel();
+    
   }
 
-  // Future<void> sync() async {
-  //   print('sat9 $state');
-  //   emit(TodoLoading(state));
-  //   final result = await _sync();
-  //   result.fold(
-  //     (failure) {
-  //       emit(TodoError(failure.errorMessage));
-  //     },
-  //     (_) => emit(SyncCompleted()),
-  //   );
-  // }
+  Future<void> sync() async {
+    'enter cubit sync'.printFirst();
+    emit(TodoLoading(state));
+    final result = await _sync();
+    result.fold(
+      (failure) {
+        emit(TodoError(failure.errorMessage));
+      },
+      (_) {
+        emit(SyncCompleted());
+      },
+    );
+  }
 
   Future<void> updateCompleted(String todoId) async {
     emit(TodoLoading(state));
@@ -212,17 +211,13 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   Future<void> updateMakeImportant(String todoId) async {
-    
-
     emit(TodoLoading(state));
-    
+
     final result = await _updateMakeImportant(todoId);
     result.fold(
       (failure) => emit(TodoError(failure.errorMessage)),
       (_) {
-      
         emit(UpdateImportantCompletedState());
-        
       },
     );
   }
@@ -247,7 +242,7 @@ class TodoCubit extends Cubit<TodoState> {
     required String folderId,
     required String newFolderName,
   }) async {
-   // 'cubit start'.printFirst();
+    // 'cubit start'.printFirst();
     emit(TodoLoading(state));
     final result = await _updateFolder(
       UpdateFolderParams(folderId: folderId, newFolderName: newFolderName),
@@ -258,7 +253,7 @@ class TodoCubit extends Cubit<TodoState> {
         emit(TodoActionCompleted());
       },
     );
-   // 'cubit end'.printFirst();
+    // 'cubit end'.printFirst();
   }
 
   Future<void> getErrors() async {
@@ -268,7 +263,7 @@ class TodoCubit extends Cubit<TodoState> {
         result.fold(
           (l) {
             emit(TodoError.withUuid(l.errorMessage));
-            subscription.cancel();
+            subscription?.cancel();
           },
           (exception) {
             if (exception is ServerException) {

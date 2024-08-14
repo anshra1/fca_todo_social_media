@@ -1,4 +1,3 @@
-
 part of '../../import.dart';
 
 class FolderView extends StatefulHookWidget {
@@ -69,7 +68,9 @@ class _FolderViewState extends State<FolderView> {
     // });
 
     setting = ValueNotifier<Setting>(
-        HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting());
+      // HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting(),
+      TodoManager.getViewSelectedSetting(widget.title),
+    );
   }
 
   @override
@@ -86,7 +87,8 @@ class _FolderViewState extends State<FolderView> {
       isFolder: true,
       settingNotifier: setting,
       renameListFunction: () {
-        final folder = HiveBox.folderBox.get(widget.folderid);
+        // final folder = HiveBox.folderBox.get(widget.folderid);
+        final folder = TodoManager.getFolder(widget.folderid);
         if (folder != null) {
           GlobalWidgetDialog.instance().show(
             context: context,
@@ -98,11 +100,13 @@ class _FolderViewState extends State<FolderView> {
         }
       },
       deleteListFunction: () async {
-        final folder = HiveBox.folderBox.get(widget.folderid);
+        // final folder = HiveBox.folderBox.get(widget.folderid);
+        final folder = TodoManager.getFolder(widget.folderid);
         if (folder != null) {
           await const DeleteDialog().present(context).then((onValue) {
             if (onValue == null) return;
             if (onValue == true) {
+              // ignore: use_build_context_synchronously
               LastNaviagtions.navigateTo(context, AllTodosView.routeName);
               sl<TodoCubit>().deleteFolders(folder.folderId);
             }
@@ -112,7 +116,15 @@ class _FolderViewState extends State<FolderView> {
       body: ValueListenableBuilder(
         valueListenable: setting,
         builder: (context, _, __) {
-          HiveBox.settingBox.put(
+          // HiveBox.settingBox.put(
+          //   widget.title,
+          //   Setting(
+          //     sortCriteria: setting.value.sortCriteria,
+          //     colorName: setting.value.colorName,
+          //   ),
+          // );
+
+          TodoManager.addSetting(
             widget.title,
             Setting(
               sortCriteria: setting.value.sortCriteria,
@@ -121,26 +133,26 @@ class _FolderViewState extends State<FolderView> {
           );
 
           return ValueListenableBuilder(
-            valueListenable: HiveBox.taskBox.listenable(),
+            valueListenable: TodoManager.taskBoxListenable,
             builder: (context, box, __) {
               return HookBuilder(
                 builder: (context) {
                   final sortReverse = useState(false);
                   var folderItemListTodos = <Todo>[];
                   if (setting.value.sortCriteria == SortCriteria.none) {
-                    folderItemListTodos = HiveBox.taskBox.values
+                    folderItemListTodos = TodoManager.todoList
                         .where((todo) => todo.folderId == widget.folderid)
                         .toList();
                   } else {
                     if (sortReverse.value) {
-                      folderItemListTodos = HiveBox.taskBox.values
+                      folderItemListTodos = TodoManager.todoList
                           .where((todo) => todo.folderId == widget.folderid)
                           .toList()
                           .sortByCriteria(setting.value.sortCriteria)
                           .reversed
                           .toList();
                     } else {
-                      folderItemListTodos = HiveBox.taskBox.values
+                      folderItemListTodos = TodoManager.todoList
                           .where((todo) => todo.folderId == widget.folderid)
                           .toList()
                           .sortByCriteria(setting.value.sortCriteria)

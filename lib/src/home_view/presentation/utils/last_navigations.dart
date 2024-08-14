@@ -18,6 +18,7 @@ class LastNaviagtions {
     };
 
     await HiveBox.commonBox.put(Strings.lastPage, Common(map)).then((_) {
+      // ignore: use_build_context_synchronously
       context.pushReplacementNamed(
         routeName,
         extra: {

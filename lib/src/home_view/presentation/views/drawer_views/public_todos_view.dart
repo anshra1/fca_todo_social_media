@@ -10,7 +10,7 @@ class PublicTodos extends OnlyTodoShell {
         );
 
   static List<Todo> _getPublicTodos() {
-    return HiveBox.taskBox.values.where((todo) {
+    return TodoManager.todoList.where((todo) {
       return todo.type == Strings.public;
     }).toList();
   }

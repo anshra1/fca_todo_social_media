@@ -32,11 +32,12 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
     super.initState();
     reverse = false;
     settingNotifier = ValueNotifier<Setting>(
-      HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting(),
+      // HiveBox.settingBox.get(widget.title) ?? Setting.defaultSetting(),
+      TodoManager.getViewSelectedSetting(widget.title),
     );
     mapNotifier = ValueNotifier<Map<String, bool>>({});
 
-    for (final folder in HiveBox.folderBox.values) {
+    for (final folder in TodoManager.folderList) {
       mapNotifier.value[folder.folderName] = true;
     }
   }
@@ -55,16 +56,16 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
       showImportantSheetTile: widget.showImportantSheetTile,
       isFloatingActionButton: widget.isFloatingActionButton,
       body: ValueListenableBuilder(
-        valueListenable: HiveBox.settingBox.listenable(),
+        valueListenable: TodoManager.settingBoxListenable,
         builder: (context, _, __) {
           return ValueListenableBuilder(
-            valueListenable: HiveBox.taskBox.listenable(),
+            valueListenable: TodoManager.taskBoxListenable,
             builder: (context, _, __) {
-              final settings = HiveBox.settingBox.get(widget.title);
+              //final settings = HiveBox.settingBox.get(widget.title);
+              final settings = TodoManager.getViewSelectedSetting(widget.title);
 
               return CustomScrollView(
-                slivers: settings != null &&
-                        settings.sortCriteria != SortCriteria.none
+                slivers: settings.sortCriteria != SortCriteria.none
                     ? _buildAllTodosSilvers(settings.sortCriteria, settings)
                     : _buildFolderSlivers(),
               );
@@ -99,7 +100,12 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
           title: 'Sorted by ${sortCriteria.toDisplayString()}',
           isCollapse: reverse,
           closeSorting: () async {
-            await HiveBox.settingBox.put(
+            // await HiveBox.settingBox.put(
+            //   widget.title,
+            //   settings.copyWith(sortCriteria: SortCriteria.none),
+            // );
+
+            TodoManager.addSetting(
               widget.title,
               settings.copyWith(sortCriteria: SortCriteria.none),
             );
@@ -121,7 +127,7 @@ class _ShowAllFoldersShellState extends State<ShowAllFoldersShell> {
   }
 
   List<Widget> _buildFolderSlivers() {
-    return HiveBox.folderBox.values.sorted((folder1, folder2) {
+    return TodoManager.folderList.sorted((folder1, folder2) {
       return folder1.folderName.compareTo(folder2.folderName);
     }).expand((folder) {
       final folderList = widget.filterFolderTodosFunc(folder.folderId);
